@@ -1,19 +1,32 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Link } from "react-router-dom";
 import {
      Stitch,
      RemoteMongoClient,
     AnonymousCredential
 } from "mongodb-stitch-browser-sdk";
-import logo from './logo.svg';
 import './App.css';
 
 let dbName = "test";
 let colName = "best";
 const client = Stitch.initializeDefaultAppClient("best-fzcva");
 client.auth.loginWithCredential(new AnonymousCredential())
-const best = client.getServiceClient(RemoteMongoClient.factory,
+const bestCol = client.getServiceClient(RemoteMongoClient.factory,
                                       "mongodb-atlas").db(dbName).collection(colName);
-let props = {client, best};
+let props = {client, bestCol};
+
+
+class Year extends Component {
+constructor(props) {
+   super(props);
+
+   this.state = {
+      playlists: []
+   };
+   this.client = props.client;
+   this.bestCol = props.bestCol;
+}
+};
 
 
 class YearsList extends Component {
@@ -24,7 +37,7 @@ constructor(props) {
       years: []
    };
    this.client = props.client;
-   this.best = props.best;
+   this.bestCol = props.bestCol;
 }
 
 loadList() {
@@ -41,22 +54,14 @@ loadList() {
     { "$unwind": { "path": "$yearList"} },
     { "$project": {"year": "$yearList.year"} }
   ];
-  this.best.aggregate(pipeline).asArray().then(docs => {
-    this.setState({ years: docs, requestPending: false });
+  this.bestCol.aggregate(pipeline).asArray().then(docs => {
+    this.setState({ years: docs });
   });
 }
 
 componentWillMount() {
    this.loadList();
 }
-
-/*
-checkHandler(id, status) {
-   this.items.updateOne({ _id: id }, { $set: { checked: status } }).then(() => {
-      this.loadList();
-   }, { rule: "checked" });
-}
-*/
 
 componentDidMount() {
    this.loadList();
@@ -65,11 +70,15 @@ componentDidMount() {
 render() {
    let result = (
       <div>
+        <table>
         {this.state.years.map(year => (
-          <ul className="items-list">
-            {year.year}
-          </ul>
+          <tr>
+          <td className="items-list">
+             <div><Link to={year.year}>{year.year}</Link></div>
+          </td>
+         </tr>
         ))}
+        </table>
       </div>
    );
    return result;
@@ -79,29 +88,14 @@ render() {
 class App extends Component {
   render() {
     return (
+      <BrowserRouter>
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            <p>
-            {Stitch.defaultAppClient.auth.isLoggedIn ?
-                              "logged in" :
-                              "not logged in"
-            }
-            </p>
-          </p>
+          <b>The Best</b>
           <YearsList {...props}/>
-
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
       </div>
+      </BrowserRouter>
     );
   }
 }
