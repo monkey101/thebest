@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BSON } from 'mongodb-stitch';
 import {
      Stitch,
      RemoteMongoClient,
@@ -174,6 +175,68 @@ render() {
 }
 };
 
+class Search extends Component {
+constructor(props) {
+  super(props);
+  this.state = {
+    matches: []
+  };
+  this.bestCol = props.bestCol;
+  this.search = this.search.bind(this);
+}
+
+componentDidMount() {
+   this.input.focus();
+}
+
+search(e) {
+	const s = this.input.value;
+	const filter = { $or: [{ "artist": BSON.BSONRegExp(s, 'i') }, { "track": BSON.BSONRegExp(s, 'i') }]};
+
+  console.log(filter)
+	const options = {
+		sort: { track: 1 },
+		limit: 30,
+	};
+
+	this.bestCol.find(filter, options).asArray().then(results => {
+      this.setState({ matches: results });
+	});
+}
+
+
+render() {
+	return (
+	<div className="content">
+		<div>
+			Search For<input
+					ref={input => {
+						this.input = input;
+					}}
+					id="search_string"
+					onChange={() => this.search()}
+			/>
+		</div>
+		<table border="1">
+			<tbody>
+				<tr>
+					<th>Track</th>
+					<th>Artist</th>
+				</tr>
+
+				{this.state.matches.map(p => (
+				<tr key={p._id}>
+					<td>{p.track}</td>
+					<td>{p.artist}</td>
+				</tr>
+				))}
+			</tbody>
+		</table>
+	</div>
+	);
+}
+};
+
 class App extends Component {
   render() {
     return (
@@ -188,11 +251,21 @@ class App extends Component {
 					>
             <span className="logo">
               <Link to="/" className="home-link">
-                The Best
+                <h3>The Best</h3>
+              </Link>
+              <Link to="/search" className="home-link">
+                <h3>Search</h3>
               </Link>
             </span>
 						<YearsList {...props}/>
 					</div>
+					<div style={{ flex: 1, width: "20%", padding: "10px" }}>
+						<Route
+              exact
+							path="/search"
+							render={(props) => <Search {...props} bestCol={bestCol}/>}
+						/>
+          </div>
 					<div style={{ flex: 1, width: "20%", padding: "10px" }}>
 						<Route
 							path="/year/:year"
@@ -201,6 +274,7 @@ class App extends Component {
           </div>
 					<div style={{ flex: 3, width: "80%", padding: "10px" }}>
 						<Route
+              exact
 							path="/year/:year/:playlist"
 							render={(props) => <Playlist {...props} bestCol={bestCol}/>}
 						/>
