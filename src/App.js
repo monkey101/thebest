@@ -7,6 +7,9 @@ import {
      AnonymousCredential
 } from "mongodb-stitch-browser-sdk";
 import './App.css';
+import total_stats from './total_stats.png';
+import tracks_added_per_year from './tracks_added_per_year.png';
+import tracks_per_author from './tracks_per_author.png';
 
 let dbName = "test";
 let colName = "best";
@@ -184,6 +187,21 @@ render() {
 }
 };
 
+class Stats extends Component {
+
+render() {
+  return(
+  <div>
+    <img src={total_stats} alt="total_stats" />
+    <p></p>
+    <img src={tracks_per_author} alt="tracks_per_author" />
+    <p></p>
+    <img src={tracks_added_per_year} alt="tracks_added_per_year" />
+  </div>
+  );
+}
+};
+
 class Search extends Component {
 constructor(props) {
   super(props);
@@ -278,6 +296,9 @@ class App extends Component {
             <Link to="/search" className="home-link">
               <h3>Search</h3>
             </Link>
+            <Link to="/stats" className="home-link">
+              <h3>Stats</h3>
+            </Link>
           </span>
           <YearsList {...props}/>
         </div>
@@ -285,6 +306,11 @@ class App extends Component {
             exact
             path="/search"
             render={(props) => <Search {...props} bestCol={bestCol}/>}
+          />
+          <Route
+            exact
+            path="/stats"
+            render={(props) => <Stats {...props} bestCol={bestCol}/>}
           />
           <Route
             path="/year/:year"
