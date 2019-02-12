@@ -234,6 +234,9 @@ render() {
       <table border="1">
         <tbody>
           <tr>
+            <th>Author</th>
+            <th>Year</th>
+            <th>Playlist</th>
             <th>Track</th>
             <th>Artist</th>
             <th>Album</th>
@@ -241,6 +244,9 @@ render() {
 
           {this.state.matches.map(p => (
           <tr key={p._id}>
+            <td>{p.author}</td>
+            <td>{p.year}</td>
+            <td>{p.playlist}</td>
             <td>{p.track}</td>
             <td>{p.artist}</td>
             <td>{p.album}</td>
