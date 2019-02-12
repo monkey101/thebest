@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import { BSON } from 'mongodb-stitch';
+//import { BSON } from 'mongodb-stitch';
 import {
      Stitch,
      RemoteMongoClient,
@@ -55,14 +55,23 @@ render() {
   console.log("rendered year")
   let result = (
     <div>
-      <h3>Year: {this.year}</h3>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
-        {this.state.playlists.map(playlist=> (
-         <li key={playlist._id}>
-             <div><Link to={`/year/${this.year}/${playlist._id}`}>{playlist._id}</Link></div>
-         </li>
-        ))}
-      </ul>
+      <div style={{ flex: 1, padding: "10px" }}>
+        <h3>Year: {this.year}</h3>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {this.state.playlists.map(playlist=> (
+           <li key={playlist._id}>
+               <div><Link to={`/year/${this.year}/${playlist._id}`}>{playlist._id}</Link></div>
+           </li>
+          ))}
+        </ul>
+      </div>
+      <div style={{ flex: 1, padding: "10px" }}>
+        <Route
+          exact
+          path="/year/:year/:playlist"
+          render={(props) => <Playlist {...props} bestCol={bestCol}/>}
+        />
+      </div>
     </div>
   );
   return result;
@@ -110,20 +119,20 @@ render() {
         <tbody>
           <tr>
             <th>Artist</th>
-             <th>Track</th>
-             <th>Album</th>
-             <th>Genre</th>
-             <th>Time</th>
-           </tr>
-           {this.state.tracks.map(track => (
-           <tr key={track._id}>
-             <td>{track.artist}</td>
-             <td>{track.track}</td>
-             <td>{track.album}</td>
-             <td>{track.genre}</td>
-             <td>{track.time}</td>
-           </tr>
-           ))}
+            <th>Track</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Time</th>
+          </tr>
+          {this.state.tracks.map(track => (
+          <tr key={track._id}>
+            <td>{track.artist}</td>
+            <td>{track.track}</td>
+            <td>{track.album}</td>
+            <td>{track.genre}</td>
+            <td>{track.time}</td>
+          </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -191,10 +200,10 @@ componentDidMount() {
 
 search(e) {
   const s = this.input.value;
-  const regex = BSON.BSONRegExp(s, "i")
   const filter = { $or: [
     { artist: { "$regularExpression":{"pattern": s,"options": "i"}}},
-    { track : { "$regularExpression":{"pattern": s,"options": "i"}}}
+    { track : { "$regularExpression":{"pattern": s,"options": "i"}}},
+    { album : { "$regularExpression":{"pattern": s,"options": "i"}}}
   ]};
 
   console.log(filter)
@@ -211,7 +220,7 @@ search(e) {
 
 render() {
   return (
-  <div className="content">
+  <div style={{ flex: 1, padding: "10px" }}>
     <div>
       Search For <input
         ref={input => {
@@ -220,18 +229,21 @@ render() {
         id="search_string"
         onChange={() => this.search()}
       />
+      <p></p>
     </div>
       <table border="1">
         <tbody>
           <tr>
             <th>Track</th>
             <th>Artist</th>
+            <th>Album</th>
           </tr>
 
           {this.state.matches.map(p => (
           <tr key={p._id}>
             <td>{p.track}</td>
             <td>{p.artist}</td>
+            <td>{p.album}</td>
           </tr>
           ))}
        </tbody>
@@ -263,26 +275,15 @@ class App extends Component {
           </span>
           <YearsList {...props}/>
         </div>
-        <div style={{ flex: 1, width: "20%", padding: "10px" }}>
           <Route
             exact
             path="/search"
             render={(props) => <Search {...props} bestCol={bestCol}/>}
           />
-        </div>
-        <div style={{ flex: 1, width: "20%", padding: "10px" }}>
           <Route
             path="/year/:year"
             render={(props) => <Year {...props} bestCol={bestCol}/>}
           />
-        </div>
-        <div style={{ flex: 3, width: "80%", padding: "10px" }}>
-          <Route
-            exact
-            path="/year/:year/:playlist"
-            render={(props) => <Playlist {...props} bestCol={bestCol}/>}
-          />
-        </div>
       </div>
     </BrowserRouter>
   );
