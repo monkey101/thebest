@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
-//import { BSON } from 'mongodb-stitch';
+import { BSON } from 'mongodb-stitch';
 import {
      Stitch,
      RemoteMongoClient,
@@ -10,6 +10,15 @@ import './App.css';
 import total_stats from './total_stats.png';
 import tracks_added_per_year from './tracks_added_per_year.png';
 import tracks_per_author from './tracks_per_author.png';
+
+
+// Set up the 404 redirect
+const queryString = require('query-string');
+const params = queryString.parse(document.location.search);
+const redirect = params.redirect; // this would be "abcdefg" if the query was "?redirect=abcdefg"
+if (document.location.pathname === '/' && redirect) {
+  document.location.assign(`${document.location.origin}/${redirect}`);
+}
 
 let dbName = "test";
 let colName = "best";
@@ -218,11 +227,14 @@ componentDidMount() {
 
 search(e) {
   const s = this.input.value;
+    /*
   const filter = { $or: [
     { artist: { "$regularExpression":{"pattern": s,"options": "i"}}},
     { track : { "$regularExpression":{"pattern": s,"options": "i"}}},
     { album : { "$regularExpression":{"pattern": s,"options": "i"}}}
   ]};
+  */
+  const filter = { artist : BSON.BSONRegExp(s, "i") };
 
   console.log(filter)
   const options = {
