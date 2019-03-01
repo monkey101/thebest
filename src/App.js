@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import { BSON } from 'mongodb-stitch';
 import {
      Stitch,
      RemoteMongoClient,
@@ -227,14 +226,11 @@ componentDidMount() {
 
 search(e) {
   const s = this.input.value;
-    /*
   const filter = { $or: [
     { artist: { "$regularExpression":{"pattern": s,"options": "i"}}},
     { track : { "$regularExpression":{"pattern": s,"options": "i"}}},
     { album : { "$regularExpression":{"pattern": s,"options": "i"}}}
   ]};
-  */
-  const filter = { artist : BSON.BSONRegExp(s, "i") };
 
   console.log(filter)
   const options = {
