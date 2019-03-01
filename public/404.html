@@ -10,7 +10,8 @@
   <script>
     (function redirect() {
       if (document && document.location) {
-        document.location.replace(`/?redirect=${encodeURIComponent(document.location.pathname)}`);
+        param = document.location.pathname.substring(1);
+        document.location.replace(`/?redirect=${param}`);
       }
     }());
   </script>
