@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 import {
      Stitch,
      RemoteMongoClient,
@@ -66,17 +66,19 @@ render() {
   console.log("rendered year")
   let result = (
     <div>
-      <div style={{ flex: 1, padding: "10px" }}>
+    <div style={{ flex: 1, padding: "10px", background: "#fafafa" }}>
+      <div style={{ padding: "10px", width: "90%", background: "#fafafa"}}>
         <h3>Year: {this.year}</h3>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
+        <ul style={{ listStyleType: "none", padding: 0}}>
           {this.state.playlists.map(playlist=> (
            <li key={playlist._id}>
-               <div><Link to={`/year/${this.year}/${playlist._id}`}>{playlist._id}</Link></div>
+               <Link to={`/year/${this.year}/${playlist._id}`}>{playlist._id}</Link>
            </li>
           ))}
         </ul>
+                </div>
       </div>
-      <div style={{ flex: 1, padding: "10px" }}>
+      <div style={{ flex: 1}}>
         <Route
           exact
           path="/year/:year/:playlist"
@@ -124,7 +126,8 @@ loadPlaylist() {
 render() {
   console.log("rendered playlist")
   let result = (
-    <div>
+    <div style={{ flex: 1, padding: "10px", background: "#fafafa" }}>
+      <div style={{ padding: "10px", width: "90%", background: "#fafafa"}}>
       <h3>Playlist: {this.playlist}</h3>
       <table border="1">
         <tbody>
@@ -146,6 +149,7 @@ render() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
   return result;
@@ -199,12 +203,14 @@ class Stats extends Component {
 
 render() {
   return(
-  <div>
-    <img src={total_stats} alt="total_stats" />
-    <p></p>
-    <img src={tracks_per_author} alt="tracks_per_author" />
-    <p></p>
-    <img src={tracks_added_per_year} alt="tracks_added_per_year" />
+  <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
+    <div style={{ padding: "10px", width: "90%"}}>
+      <img src={total_stats} alt="total_stats" />
+      <p></p>
+      <img src={tracks_per_author} alt="tracks_per_author" />
+      <p></p>
+      <img src={tracks_added_per_year} alt="tracks_added_per_year" />
+    </div>
   </div>
   );
 }
@@ -246,8 +252,8 @@ search(e) {
 
 render() {
   return (
-  <div style={{ flex: 1, padding: "10px" }}>
-    <div>
+  <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
+    <div style={{ padding: "10px", width: "90%"}}>
       Search For <input
         ref={input => {
            this.input = input;
@@ -285,6 +291,20 @@ render() {
 }
 };
 
+class NoMatch extends Component {
+render() {
+  return(
+  <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
+    <div style={{ padding: "10px", width: "90%"}}>
+     Welcome!<p/>
+     Browse playlists by year, search for a track or check out the all time stats....
+     </div>
+  </div>
+  );
+}
+};
+
+
 class App extends Component {
   render() {
     return (
@@ -310,6 +330,7 @@ class App extends Component {
           </span>
           <YearsList {...props}/>
         </div>
+          <Switch>
           <Route
             exact
             path="/search"
@@ -324,6 +345,8 @@ class App extends Component {
             path="/year/:year"
             render={(props) => <Year {...props} bestCol={bestCol}/>}
           />
+          <Route component={NoMatch}/>
+          </Switch>
       </div>
     </BrowserRouter>
   );
