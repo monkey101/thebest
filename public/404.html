@@ -11,7 +11,8 @@
     (function redirect() {
       if (document && document.location) {
         param = document.location.pathname.substring(1);
-        document.location.replace(`/?redirect=${param}`);
+        //document.location.replace(`/?redirect=${param}`);
+        document.location.replace(`/`);
       }
     }());
   </script>

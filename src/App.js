@@ -8,13 +8,6 @@ import {
 import './App.css';
 
 
-// Set up the 404 redirect
-const queryString = require('query-string');
-const params = queryString.parse(document.location.search);
-const redirect = params.redirect; // this would be "abcdefg" if the query was "?redirect=abcdefg"
-if (document.location.pathname === '/' && redirect) {
-  document.location.assign(`${document.location.origin}/${redirect}`);
-}
 
 let dbName = "test";
 let colName = "best";
@@ -22,7 +15,19 @@ const client = Stitch.initializeDefaultAppClient("best-fzcva");
 client.auth.loginWithCredential(new AnonymousCredential())
 const bestCol = client.getServiceClient(RemoteMongoClient.factory,
                                       "mongodb-atlas").db(dbName).collection(colName);
-let props = {client: client, bestCol: bestCol};
+const queryString = require('query-string');
+const params = queryString.parse(document.location.search);
+// this would be "abcdefg" if the query was "?redirect=abcdefg"
+const redirect = params.redirect;
+var url = null;
+console.log("bar" , document.location.pathname, redirect);
+console.log("baz" , redirect);
+if (document.location.pathname === '/' && redirect) {
+  url = (`${document.location.origin}/${redirect}`);
+  console.log("FOO", redirect, url);
+}
+let props = {client: client, bestCol: bestCol, redirected: url};
+console.log("BAR", props.redirected);
 
 
 class Year extends Component {
@@ -288,9 +293,20 @@ render() {
 }
 };
 
-class NoMatch extends Component {
+// Set up the 404 redirect
+
+class Home extends Component {
+constructor(props) {
+  super(props);
+  this.redirected = props.redirected;
+  console.log("REDIRECT", props.redirected);
+}
+
 render() {
-  return(
+  if (this.redirected) {
+    document.location.assign(this.redirected);
+  }
+  else { return(
   <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
     <div style={{ padding: "10px", width: "90%"}}>
      Welcome!<p/>
@@ -298,6 +314,7 @@ render() {
      </div>
   </div>
   );
+  }
 }
 };
 
@@ -342,7 +359,16 @@ class App extends Component {
             path="/year/:year"
             render={(props) => <Year {...props} bestCol={bestCol}/>}
           />
-          <Route component={NoMatch}/>
+          <Route
+            path="/year/:year"
+            render={(props) => <Year {...props} bestCol={bestCol}/>}
+          />
+          <Route
+            exact
+            path="/"
+            render={(props) => <Home {...props} redirected={url}/>}
+          />
+          <Route component={Home}/>
           </Switch>
       </div>
     </BrowserRouter>
