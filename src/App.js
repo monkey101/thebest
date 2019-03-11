@@ -6,9 +6,6 @@ import {
      AnonymousCredential
 } from "mongodb-stitch-browser-sdk";
 import './App.css';
-import total_stats from './total_stats.png';
-import tracks_added_per_year from './tracks_added_per_year.png';
-import tracks_per_author from './tracks_per_author.png';
 
 
 // Set up the 404 redirect
@@ -203,13 +200,13 @@ class Stats extends Component {
 
 render() {
   return(
-  <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
-    <div style={{ padding: "10px", width: "90%"}}>
-      <img src={total_stats} alt="total_stats" />
-      <p></p>
-      <img src={tracks_per_author} alt="tracks_per_author" />
-      <p></p>
-      <img src={tracks_added_per_year} alt="tracks_added_per_year" />
+  <div style={{ display: "flex", "flex-direction": "column", padding: "10px",background: "#fafafa" }}>
+    <div style={{ display: "flex"}}>
+      <iframe title="tracks" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=6e9f2829-fea5-458c-a8c7-1bb72929e518&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
+      <iframe title="artists" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=080a03cf-b75d-4a70-83ad-d7e88ac6e15f&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
+    </div>
+    <div>
+      <iframe title="artists" style={{"border": "none", "width":840, "height":960}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=fae1fab0-9367-4dd0-903c-8aeed0c4f10c&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
     </div>
   </div>
   );
