@@ -15,9 +15,10 @@ const client = Stitch.initializeDefaultAppClient("best-fzcva");
 client.auth.loginWithCredential(new AnonymousCredential())
 const bestCol = client.getServiceClient(RemoteMongoClient.factory,
                                       "mongodb-atlas").db(dbName).collection(colName);
+// set up the 404 redirect
+// this would be "abcdefg" if the query was "?redirect=abcdefg"
 const queryString = require('query-string');
 const params = queryString.parse(document.location.search);
-// this would be "abcdefg" if the query was "?redirect=abcdefg"
 const redirect = params.redirect;
 let props = {client: client, bestCol: bestCol, redirected: redirect};
 
@@ -285,20 +286,16 @@ render() {
 }
 };
 
-// Set up the 404 redirect
-
 class Home extends Component {
 constructor(props) {
   super(props);
+  // I don't understand why i need to do this assignment for this to work
   this.redirected = props.redirected;
-  console.log("NEW REDIRECT", props.redirected);
-  console.log("NEW NEW REDIRECT", this.redirected);
 }
 
 render() {
   if (this.redirected) {
-    console.log("DOING IT", props.redirected);
-    return (<Redirect to={props.redirected}/>)
+    return (<Redirect to={this.redirected}/>)
   }
   else { return(
   <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
