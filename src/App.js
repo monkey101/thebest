@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Link, Switch } from "react-router-dom";
 import {
      Stitch,
      RemoteMongoClient,
@@ -19,15 +19,7 @@ const queryString = require('query-string');
 const params = queryString.parse(document.location.search);
 // this would be "abcdefg" if the query was "?redirect=abcdefg"
 const redirect = params.redirect;
-var url = null;
-console.log("bar" , document.location.pathname, redirect);
-console.log("baz" , redirect);
-if (document.location.pathname === '/' && redirect) {
-  url = (`${document.location.origin}/${redirect}`);
-  console.log("FOO", redirect, url);
-}
-let props = {client: client, bestCol: bestCol, redirected: url};
-console.log("BAR", props.redirected);
+let props = {client: client, bestCol: bestCol, redirected: redirect};
 
 
 class Year extends Component {
@@ -299,12 +291,14 @@ class Home extends Component {
 constructor(props) {
   super(props);
   this.redirected = props.redirected;
-  console.log("REDIRECT", props.redirected);
+  console.log("NEW REDIRECT", props.redirected);
+  console.log("NEW NEW REDIRECT", this.redirected);
 }
 
 render() {
   if (this.redirected) {
-    document.location.assign(this.redirected);
+    console.log("DOING IT", props.redirected);
+    return (<Redirect to={props.redirected}/>)
   }
   else { return(
   <div style={{ flex: 1, padding: "10px",background: "#fafafa" }}>
@@ -366,7 +360,7 @@ class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => <Home {...props} redirected={url}/>}
+            render={(props) => <Home {...props} redirected={redirect}/>}
           />
           <Route component={Home}/>
           </Switch>
