@@ -200,11 +200,11 @@ render() {
   return(
   <div style={{ display: "flex", "flex-direction": "column", padding: "10px",background: "#fafafa" }}>
     <div style={{ display: "flex"}}>
-      <iframe title="tracks" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=6e9f2829-fea5-458c-a8c7-1bb72929e518&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
-      <iframe title="artists" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=080a03cf-b75d-4a70-83ad-d7e88ac6e15f&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
+      <iframe title="tracks" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=b68df329-df86-4368-a429-82f8f1416329&tenant=80cb15e5-d391-4f34-b3b2-144dd72158ae"></iframe>
+      <iframe title="artists" style={{"border": "none", "width":420, "height":340}} src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=845392e2-e5cd-4ba3-bc37-7ba9ea7fb72d&tenant=80cb15e5-d391-4f34-b3b2-144dd72158ae"></iframe>
     </div>
     <div>
-      <iframe title="artists" style={{"border": "none", "width":840, "height":960}} src="https://charts.mongodb.parts/mongodb-charts-twsqq/embed/charts?id=fae1fab0-9367-4dd0-903c-8aeed0c4f10c&tenant=3397ee6d-5079-4a20-b097-cedd475220b5"></iframe>
+      <iframe title="artists" style={{"border": "none", "width":840, "height":960}} src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=40590a31-8673-4825-ad0e-c9653b6da9b0&tenant=80cb15e5-d391-4f34-b3b2-144dd72158ae"></iframe>
     </div>
   </div>
   );
