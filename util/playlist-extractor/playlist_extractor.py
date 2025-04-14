@@ -112,6 +112,31 @@ def update_playlist_owners(sp, json_data):
     return json_data
 
 def main():
+    """
+    Main function to extract Spotify playlist data and save it to a CSV file.
+
+    This function performs the following tasks:
+    1. Parses command-line arguments to determine the input JSON file and optional flags.
+    2. Reads and validates the JSON file containing playlist folder structure and metadata.
+    3. Authenticates with the Spotify API using client credentials from the .env file.
+    4. If the '--update-owners' flag is provided, updates the playlist owners in the JSON file.
+    5. Processes each playlist in the folder structure to extract track metadata.
+    6. Saves the extracted track data to a CSV file named after the playlist folder.
+
+    Command-line arguments:
+    - json_file: Path to the JSON file containing playlist information.
+    - --update-owners: Optional flag to update playlist owners in the JSON file.
+
+    Raises:
+    - ValueError: If the JSON file is invalid or required fields are missing.
+    - Exception: For any other errors encountered during execution.
+
+    Example usage:
+    - Extract playlist data to CSV:
+      python playlist_extractor.py playlists.json
+    - Update playlist owners in the JSON file:
+      python playlist_extractor.py playlists.json --update-owners
+    """
     parser = argparse.ArgumentParser(description='Extract Spotify playlist data to CSV')
     parser.add_argument('json_file', help='JSON file containing playlist information')
     parser.add_argument('--update-owners', action='store_true', help='Update playlist owners in the JSON file')
@@ -169,4 +194,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main() 
+    main()
