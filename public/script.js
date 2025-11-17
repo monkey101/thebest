@@ -65,7 +65,7 @@ async function loadPlaylistsByYear(year) {
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById('playlists').classList.add('active');
     
-    const response = await fetch(`/api/playlists/${year}`);
+    const response = await fetch(`/api/playlists?year=${year}`);
     const playlists = await response.json();
     
     const playlistsList = document.getElementById('playlistsList');
