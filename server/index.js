@@ -124,6 +124,7 @@ app.get('/', (req, res) => {
 
 // Export Express app for Vercel serverless API
 module.exports = app;
+module.exports.default = app;
 
 // If running locally, start the server
 if (require.main === module) {
