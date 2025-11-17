@@ -1,68 +1,154 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# The Best AI - Music Playlist Database
 
-## Available Scripts
+A database-driven website to store and browse music playlists organized by year, with MongoDB full-text search functionality.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **View playlists by year** - Browse all playlists created in a specific year
+- **View available years** - See which years have playlists
+- **Full-text search** - Search for tracks using MongoDB's full-text search
+- **Database-driven** - All data stored in MongoDB, read-only web interface
+- **Vercel deployment** - Easily deploy to Vercel with serverless functions
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Project Structure
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```
+thebestai/
+├── server/
+│   └── index.js          # Express server with API routes
+├── public/
+│   ├── index.html        # Main page
+│   ├── style.css         # Styling
+│   └── script.js         # Frontend logic
+├── package.json          # Dependencies
+├── vercel.json          # Vercel configuration
+├── .env.example         # Environment variables template
+└── README.md            # This file
+```
 
-### `npm test`
+## Database Schema
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The MongoDB `best` collection stores individual track documents with the following structure:
 
-### `npm run build`
+```json
+{
+  "_id": ObjectId,
+  "year": "string",
+  "playlistFolder": "string",
+  "playlist": "string",
+  "track": "string",
+  "album": "string",
+  "artist": "string",
+  "albumArtist": "string",
+  "duration": "number",
+  "time": "string",
+  "genre": "string",
+  "trackNumber": "number",
+  "author": "string"
+}
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Example Document:**
+```json
+{
+  "_id": "5c425c23d79687af85bc63c7",
+  "year": "2007",
+  "playlistFolder": "2007 - 50 Best Right Now",
+  "playlist": "Alex's 50",
+  "track": "Easy Listen' Blues",
+  "album": "The Trio",
+  "artist": "Oscar Peterson",
+  "albumArtist": "",
+  "duration": 466.8659973,
+  "time": "7:46",
+  "genre": "Jazz",
+  "trackNumber": 3,
+  "author": "Alex"
+}
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Local Development
 
-### `npm run eject`
+1. Clone the repository
+2. Copy `.env.example` to `.env` and configure MongoDB URI:
+   ```bash
+   cp .env.example .env
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the server:
+   ```bash
+   npm start
+   ```
+5. Open `http://localhost:3000` in your browser
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### MongoDB Full-Text Search Setup
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Ensure your MongoDB collection has a text index on the searchable fields:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```javascript
+db.best.createIndex({
+  "track": "text",
+  "artist": "text",
+  "album": "text",
+  "playlist": "text",
+  "author": "text",
+  "genre": "text"
+})
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Deployment to Vercel
 
-## Learn More
+### Prerequisites
+- Vercel account (https://vercel.com)
+- GitHub repository with this code
+- MongoDB Atlas URI (or other MongoDB instance with network access)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Deployment Steps
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Push to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin <your-repo-url>
+   git push -u origin main
+   ```
 
-### Code Splitting
+2. **Import to Vercel**
+   - Go to https://vercel.com/new
+   - Select "Import Git Repository"
+   - Choose your repository
+   - Click "Import"
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+3. **Configure Environment Variables**
+   - In Vercel project settings, go to "Environment Variables"
+   - Add `MONGODB_URI` with your MongoDB connection string
+   - Add `PORT` (optional, defaults to 3000)
+   - Redeploy after adding variables
 
-### Analyzing the Bundle Size
+4. **Enable Serverless Functions**
+   - Vercel automatically converts your Express app to serverless functions
+   - The `vercel.json` configuration handles routing
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+5. **Test Deployment**
+   - Visit your Vercel deployment URL
+   - Test all functionality (years, playlists, search)
 
-### Making a Progressive Web App
+## API Endpoints
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+- `GET /api/years` - Get all years with playlists
+- `GET /api/playlists/:year` - Get all playlists for a specific year
+- `GET /api/search?q=query` - Search tracks using MongoDB full-text search
+- `GET /api/health` - Health check endpoint
 
-### Advanced Configuration
+## Important Notes
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- The web interface is **read-only** - data can only be modified via direct database access
+- Full-text search requires a text index on the MongoDB collection
+- MongoDB Atlas free tier supports text search
+- Ensure your MongoDB instance has network access enabled for Vercel's IP addresses

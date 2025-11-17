@@ -1,0 +1,317 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+/* Tabs Navigation */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+  color: #667eea;
+  background: #f5f5f5;
+}
+
+.tab-btn.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: white;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  padding: 30px;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-content h2 {
+  color: #333;
+  margin-bottom: 25px;
+  font-size: 1.8em;
+}
+
+/* Years Grid */
+.years-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.year-btn {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.year-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+/* Playlists List */
+.controls {
+  margin-bottom: 25px;
+}
+
+#yearSelect {
+  padding: 10px 15px;
+  font-size: 1em;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  background: white;
+  transition: border-color 0.3s ease;
+}
+
+#yearSelect:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.playlists-list,
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.playlist-item,
+.search-result-item {
+  background: #f9f9f9;
+  border-left: 4px solid #667eea;
+  padding: 20px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.playlist-item:hover,
+.search-result-item:hover {
+  background: #f0f0f0;
+  transform: translateX(5px);
+}
+
+.playlist-item h3,
+.search-result-item h3 {
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 1.2em;
+}
+
+.playlist-meta {
+  color: #666;
+  font-size: 0.95em;
+  margin-bottom: 12px;
+}
+
+.playlist-meta span {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.playlist-meta strong {
+  color: #333;
+}
+
+.tracks-count {
+  background: #667eea;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+/* Tracks List */
+.tracks-list {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.track-item {
+  padding: 10px;
+  background: white;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border-left: 3px solid #764ba2;
+}
+
+.track-item p {
+  margin: 4px 0;
+  color: #555;
+}
+
+.track-artist {
+  font-weight: bold;
+  color: #667eea;
+}
+
+/* Search Box */
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+#searchInput {
+  flex: 1;
+  padding: 12px 15px;
+  font-size: 1em;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+#searchBtn {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+#searchBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Loading and Empty States */
+.loading {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-size: 1.1em;
+}
+
+.error {
+  background: #ffe0e0;
+  color: #c00;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.success {
+  background: #e0ffe0;
+  color: #060;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.8em;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1 1 33.33%;
+  }
+
+  .years-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .tab-content {
+    padding: 20px;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-box input,
+  .search-box button {
+    width: 100%;
+  }
+}

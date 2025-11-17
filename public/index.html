@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Best AI - Music Playlists</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎵 The Best AI</h1>
+      <p>Explore music playlists by year</p>
+    </header>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>The Best</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="years">Years</button>
+      <button class="tab-btn" data-tab="playlists">Playlists</button>
+      <button class="tab-btn" data-tab="search">Search</button>
+    </nav>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Years Tab -->
+    <section id="years" class="tab-content active">
+      <h2>Available Years</h2>
+      <div id="yearsList" class="years-grid">
+        <p class="loading">Loading years...</p>
+      </div>
+    </section>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    <!-- Playlists Tab -->
+    <section id="playlists" class="tab-content">
+      <h2>Playlists</h2>
+      <div class="controls">
+        <select id="yearSelect">
+          <option value="">Select a year...</option>
+        </select>
+      </div>
+      <div id="playlistsList" class="playlists-list">
+        <p class="loading">Select a year to view playlists</p>
+      </div>
+    </section>
+
+    <!-- Search Tab -->
+    <section id="search" class="tab-content">
+      <h2>Search Tracks</h2>
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search for artist, track, album, or playlist..."
+          autocomplete="off"
+        >
+        <button id="searchBtn">Search</button>
+      </div>
+      <div id="searchResults" class="search-results">
+        <p class="loading">Enter a search query</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>

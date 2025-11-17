@@ -1,28 +1,24 @@
 {
-  "name": "thebest",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "mongodb-stitch": "^3.2.15",
-    "mongodb-stitch-browser-sdk": "^4.2.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.3"
-  },
+  "name": "thebestai",
+  "version": "1.0.0",
+  "description": "Music playlist database website with MongoDB",
+  "main": "server/index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "build": "echo 'Build complete'"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "keywords": ["music", "playlists", "mongodb"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "devDependencies": {},
+  "engines": {
+    "node": "18.x"
+  }
 }
