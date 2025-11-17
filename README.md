@@ -14,16 +14,22 @@ A database-driven website to store and browse music playlists organized by year,
 
 ```
 thebestai/
-├── server/
-│   └── index.js          # Express server with API routes
+├── api/
+│   ├── _db.js            # MongoDB connection and schema helper
+│   ├── years.js          # GET /api/years
+│   ├── playlists.js      # GET /api/playlists?year=YYYY
+│   ├── search.js         # GET /api/search?q=QUERY
+│   └── health.js         # GET /api/health
 ├── public/
 │   ├── index.html        # Main page
 │   ├── style.css         # Styling
 │   └── script.js         # Frontend logic
+├── server/
+│   └── index.js          # Express server (legacy, for reference)
 ├── package.json          # Dependencies
-├── vercel.json          # Vercel configuration
-├── .env.example         # Environment variables template
-└── README.md            # This file
+├── vercel.json           # Vercel configuration
+├── .env.example          # Environment variables template
+└── README.md             # This file
 ```
 
 ## Database Schema
@@ -80,11 +86,18 @@ The MongoDB `best` collection stores individual track documents with the followi
    ```bash
    npm install
    ```
-4. Start the server:
+4. Install Vercel CLI (if not already installed):
    ```bash
-   npm start
+   npm install -g vercel
    ```
-5. Open `http://localhost:3000` in your browser
+5. Start the development server with Vercel:
+   ```bash
+   vercel dev
+   ```
+   This runs the app with Vercel's serverless environment, recognizing the `api/` routes.
+6. Open `http://localhost:3000` in your browser
+
+**Note:** Use `vercel dev` for local testing, not `npm start`. The app uses Vercel serverless API routes (`api/` directory) for backend functionality.
 
 ### MongoDB Full-Text Search Setup
 
