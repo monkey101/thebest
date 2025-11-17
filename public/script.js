@@ -57,6 +57,7 @@ async function loadYears() {
 // Load playlists for a specific year
 async function loadPlaylistsByYear(year) {
   try {
+    console.log(year);
     document.getElementById('yearSelect').value = year;
     
     // Switch to playlists tab
@@ -67,6 +68,7 @@ async function loadPlaylistsByYear(year) {
     
     const response = await fetch(`/api/playlists?year=${year}`);
     const playlists = await response.json();
+    console.log(response.json.toString);
     
     const playlistsList = document.getElementById('playlistsList');
     playlistsList.innerHTML = '';
@@ -113,6 +115,7 @@ function createPlaylistElement(playlist) {
   if (playlist.tracks && playlist.tracks.length > 0) {
     html += '<div class="tracks-list">';
     playlist.tracks.slice(0, 10).forEach((track, idx) => {
+
       html += `
         <div class="track-item">
           <p class="track-artist">${escapeHtml(track.artist)}</p>
@@ -201,5 +204,8 @@ function escapeHtml(text) {
     '"': '&quot;',
     "'": '&#039;'
   };
-  return text.replace(/[&<>"']/g, m => map[m]);
+  if (text !=  null) {
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+  return "";
 }
