@@ -99,7 +99,6 @@ app.get('/api/search', async (req, res) => {
     if (!q) {
       return res.status(400).json({ error: 'Search query required' });
     }
-    console.log(q);
 
     const results = await Track.find(
       { $text: { $search: q } },
