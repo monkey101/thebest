@@ -7,10 +7,25 @@ module.exports = async (req, res) => {
   }
   try {
     const Track = await connectDB();
-    const results = await Track.find(
-      { $text: { $search: q } },
-      { score: { $meta: 'textScore' } }
-    ).sort({ score: { $meta: 'textScore' } }).limit(100);
+    const results = await Track.aggregate([
+      {
+        $search: {
+          index: 'default',
+          text: {
+            query: q,
+            path: ['track', 'artist', 'album'],
+          }
+        }
+      },
+      {
+        $limit: 100
+      },
+      {
+        $addFields: {
+          score: { $meta: 'searchScore' }
+        }
+      }
+    ]);
     res.status(200).json(results);
   } catch (error) {
     console.error('Error searching:', error);

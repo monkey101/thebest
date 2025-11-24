@@ -17,14 +17,8 @@ const trackSchema = new mongoose.Schema({
   author: String
 });
 
-trackSchema.index({
-  'track': 'text',
-  'artist': 'text',
-  'album': 'text',
-  'playlist': 'text',
-  'author': 'text',
-  'genre': 'text'
-});
+// Atlas Search index is configured in MongoDB Atlas UI
+// No need for traditional text index when using Atlas Search
 
 const Track = mongoose.models.best || mongoose.model('best', trackSchema, 'best');
 

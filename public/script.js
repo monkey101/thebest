@@ -178,8 +178,7 @@ async function performSearch() {
 function createSearchResultElement(result) {
   const div = document.createElement('div');
   div.className = 'search-result-item';
-  
-  let html = `
+   let html = `
     <h3>${escapeHtml(result.track)}</h3>
     <div class="playlist-meta">
       <span><strong>Artist:</strong> ${escapeHtml(result.artist)}</span>
@@ -204,7 +203,7 @@ function escapeHtml(text) {
     '"': '&quot;',
     "'": '&#039;'
   };
-  if (text !=  null) {
+  if (typeof(text) == "string" && text !=  null) {
     return text.replace(/[&<>"']/g, m => map[m]);
   }
   return "";
