@@ -44,12 +44,15 @@
     <section id="search" class="tab-content">
       <h2>Search Tracks</h2>
       <div class="search-box">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search for artist, track, album, or playlist..."
-          autocomplete="off"
-        >
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search for artist, track, album, or playlist..."
+            autocomplete="off"
+          >
+          <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+        </div>
         <button id="searchBtn">Search</button>
       </div>
       <div id="searchResults" class="search-results">

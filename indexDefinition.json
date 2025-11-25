@@ -1,0 +1,49 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "album": [
+        {
+          "analyzer": "lucene.standard",
+          "type": "string"
+        },
+        {
+          "analyzer": "lucene.standard",
+          "foldDiacritics": true,
+          "maxGrams": 15,
+          "minGrams": 2,
+          "tokenization": "edgeGram",
+          "type": "autocomplete"
+        }
+      ],
+      "artist": [
+        {
+          "analyzer": "lucene.standard",
+          "type": "string"
+        },
+        {
+          "analyzer": "lucene.standard",
+          "foldDiacritics": true,
+          "maxGrams": 15,
+          "minGrams": 2,
+          "tokenization": "edgeGram",
+          "type": "autocomplete"
+        }
+      ],
+      "track": [
+        {
+          "analyzer": "lucene.standard",
+          "type": "string"
+        },
+        {
+          "analyzer": "lucene.standard",
+          "foldDiacritics": true,
+          "maxGrams": 15,
+          "minGrams": 2,
+          "tokenization": "edgeGram",
+          "type": "autocomplete"
+        }
+      ]
+    }
+  }
+}

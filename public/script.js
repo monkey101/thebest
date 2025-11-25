@@ -114,7 +114,7 @@ function createPlaylistElement(playlist) {
   
   if (playlist.tracks && playlist.tracks.length > 0) {
     html += '<div class="tracks-list">';
-    playlist.tracks.slice(0, 10).forEach((track, idx) => {
+    playlist.tracks.slice(0, 10).forEach((track) => {
 
       html += `
         <div class="track-item">
@@ -136,11 +136,140 @@ function createPlaylistElement(playlist) {
 
 // Search functionality
 document.getElementById('searchBtn')?.addEventListener('click', performSearch);
-document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    performSearch();
+
+// Autocomplete functionality
+let autocompleteTimeout;
+let selectedAutocompleteIndex = -1;
+
+const searchInput = document.getElementById('searchInput');
+const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+
+searchInput?.addEventListener('input', (e) => {
+  const query = e.target.value.trim();
+
+  // Clear previous timeout
+  clearTimeout(autocompleteTimeout);
+
+  if (query.length < 2) {
+    hideAutocomplete();
+    return;
+  }
+
+  // Debounce autocomplete requests
+  autocompleteTimeout = setTimeout(() => {
+    fetchAutocomplete(query);
+  }, 300);
+});
+
+searchInput?.addEventListener('keydown', (e) => {
+  const items = autocompleteDropdown?.querySelectorAll('.autocomplete-item');
+
+  if (!items || items.length === 0) {
+    if (e.key === 'Enter') {
+      hideAutocomplete();
+      performSearch();
+    }
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+    updateAutocompleteSelection(items);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
+    updateAutocompleteSelection(items);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    hideAutocomplete();
+    if (selectedAutocompleteIndex >= 0 && selectedAutocompleteIndex < items.length) {
+      items[selectedAutocompleteIndex].click();
+    } else {
+      performSearch();
+    }
+  } else if (e.key === 'Escape') {
+    hideAutocomplete();
   }
 });
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', (e) => {
+  if (!searchInput?.contains(e.target) && !autocompleteDropdown?.contains(e.target)) {
+    hideAutocomplete();
+  }
+});
+
+async function fetchAutocomplete(query) {
+  try {
+    const response = await fetch(`/api/autocomplete?q=${encodeURIComponent(query)}`);
+    const groupedSuggestions = await response.json();
+
+    if (groupedSuggestions.length > 0) {
+      showAutocomplete(groupedSuggestions);
+    } else {
+      hideAutocomplete();
+    }
+  } catch (error) {
+    console.error('Error fetching autocomplete:', error);
+    hideAutocomplete();
+  }
+}
+
+function showAutocomplete(groupedSuggestions) {
+  if (!autocompleteDropdown) return;
+
+  autocompleteDropdown.innerHTML = '';
+  selectedAutocompleteIndex = -1;
+
+  groupedSuggestions.forEach((group) => {
+    // Create group container
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'autocomplete-group';
+
+    // Create group label
+    const label = document.createElement('div');
+    label.className = 'autocomplete-group-label';
+    label.textContent = group.label;
+    groupDiv.appendChild(label);
+
+    // Add suggestions for this group
+    group.suggestions.forEach((suggestion) => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.textContent = suggestion;
+      item.dataset.type = group.type;
+      item.addEventListener('click', () => {
+        searchInput.value = suggestion;
+        hideAutocomplete();
+        performSearch();
+      });
+      groupDiv.appendChild(item);
+    });
+
+    autocompleteDropdown.appendChild(groupDiv);
+  });
+
+  autocompleteDropdown.classList.add('show');
+}
+
+function hideAutocomplete() {
+  if (!autocompleteDropdown) return;
+  autocompleteDropdown.classList.remove('show');
+  autocompleteDropdown.innerHTML = '';
+  selectedAutocompleteIndex = -1;
+}
+
+function updateAutocompleteSelection(items) {
+  items.forEach((item, index) => {
+    if (index === selectedAutocompleteIndex) {
+      item.classList.add('selected');
+      item.scrollIntoView({ block: 'nearest' });
+    } else {
+      item.classList.remove('selected');
+    }
+  });
+}
 
 async function performSearch() {
   const query = document.getElementById('searchInput').value.trim();
