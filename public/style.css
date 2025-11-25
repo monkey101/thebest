@@ -17,7 +17,8 @@ body {
   background: white;
   border-radius: 10px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 header {
@@ -73,10 +74,16 @@ header p {
   display: none;
   padding: 30px;
   animation: fadeIn 0.3s ease;
+  overflow: visible;
 }
 
 .tab-content.active {
   display: block;
+}
+
+#search.tab-content {
+  padding-bottom: 450px;
+  min-height: 500px;
 }
 
 @keyframes fadeIn {
@@ -227,6 +234,8 @@ header p {
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
+  position: relative;
+  z-index: 10;
 }
 
 .search-input-wrapper {
