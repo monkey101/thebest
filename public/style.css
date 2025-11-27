@@ -192,7 +192,8 @@ header p {
   color: #333;
 }
 
-.artist-link {
+.artist-link,
+.album-link {
   color: #667eea;
   text-decoration: none;
   cursor: pointer;
@@ -200,7 +201,8 @@ header p {
   font-weight: 500;
 }
 
-.artist-link:hover {
+.artist-link:hover,
+.album-link:hover {
   color: #764ba2;
   text-decoration: underline;
 }

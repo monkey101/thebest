@@ -17,21 +17,21 @@ module.exports = async (req, res) => {
                 text: {
                   query: q,
                   path: 'track',
-                  score: { boost: { value: 3 } }
-                }
-              },
-              {
-                text: {
-                  query: q,
-                  path: 'artist',
                   score: { boost: { value: 2 } }
                 }
               },
               {
                 text: {
                   query: q,
+                  path: 'artist',
+                  score: { boost: { value: 3 } }
+                }
+              },
+              {
+                text: {
+                  query: q,
                   path: 'album',
-                  score: { boost: { value: 1.5 } }
+                  score: { boost: { value: 1 } }
                 }
               }
             ],

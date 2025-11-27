@@ -121,7 +121,7 @@ function createPlaylistElement(playlist) {
           <p class="track-artist">
             <a href="#" class="artist-link" data-artist="${escapeHtml(track.artist)}">${escapeHtml(track.artist)}</a>
           </p>
-          <p><strong>${escapeHtml(track.track)}</strong> - ${escapeHtml(track.album)}</p>
+          <p><strong>${escapeHtml(track.track)}</strong> - <a href="#" class="album-link" data-album="${escapeHtml(track.album)}">${escapeHtml(track.album)}</a></p>
           <p><small>Genre: ${track.genre || 'N/A'} | Duration: ${track.time || 'N/A'}</small></p>
         </div>
       `;
@@ -149,6 +149,26 @@ function createPlaylistElement(playlist) {
 
       // Set search input and perform search
       searchInput.value = artistName;
+      hideAutocomplete();
+      performSearch();
+    });
+  });
+
+  // Add click event listeners to all album links in this playlist
+  const albumLinks = div.querySelectorAll('.album-link');
+  albumLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const albumName = e.target.dataset.album;
+
+      // Switch to search tab
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-tab="search"]').classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      document.getElementById('search').classList.add('active');
+
+      // Set search input and perform search
+      searchInput.value = albumName;
       hideAutocomplete();
       performSearch();
     });
@@ -334,7 +354,7 @@ function createSearchResultElement(result) {
     <h3>${escapeHtml(result.track)}</h3>
     <div class="playlist-meta">
       <span><strong>Artist:</strong> <a href="#" class="artist-link" data-artist="${escapeHtml(result.artist)}">${escapeHtml(result.artist)}</a></span>
-      <span><strong>Album:</strong> ${escapeHtml(result.album)}</span>
+      <span><strong>Album:</strong> <a href="#" class="album-link" data-album="${escapeHtml(result.album)}">${escapeHtml(result.album)}</a></span>
       <span><strong>Playlist:</strong> ${escapeHtml(result.playlist)}</span>
       <span><strong>Author:</strong> ${escapeHtml(result.author)}</span>
       <span><strong>Year:</strong> ${result.year}</span>
@@ -351,6 +371,18 @@ function createSearchResultElement(result) {
       e.preventDefault();
       const artistName = e.target.dataset.artist;
       searchInput.value = artistName;
+      hideAutocomplete();
+      performSearch();
+    });
+  }
+
+  // Add click event listener to album link
+  const albumLink = div.querySelector('.album-link');
+  if (albumLink) {
+    albumLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const albumName = e.target.dataset.album;
+      searchInput.value = albumName;
       hideAutocomplete();
       performSearch();
     });
