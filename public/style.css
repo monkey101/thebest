@@ -192,6 +192,19 @@ header p {
   color: #333;
 }
 
+.artist-link {
+  color: #667eea;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.artist-link:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
 .tracks-count {
   background: #667eea;
   color: white;

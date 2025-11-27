@@ -118,7 +118,9 @@ function createPlaylistElement(playlist) {
 
       html += `
         <div class="track-item">
-          <p class="track-artist">${escapeHtml(track.artist)}</p>
+          <p class="track-artist">
+            <a href="#" class="artist-link" data-artist="${escapeHtml(track.artist)}">${escapeHtml(track.artist)}</a>
+          </p>
           <p><strong>${escapeHtml(track.track)}</strong> - ${escapeHtml(track.album)}</p>
           <p><small>Genre: ${track.genre || 'N/A'} | Duration: ${track.time || 'N/A'}</small></p>
         </div>
@@ -129,8 +131,29 @@ function createPlaylistElement(playlist) {
     }
     html += '</div>';
   }
-  
+
   div.innerHTML = html;
+
+  // Add click event listeners to all artist links in this playlist
+  const artistLinks = div.querySelectorAll('.artist-link');
+  artistLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const artistName = e.target.dataset.artist;
+
+      // Switch to search tab
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-tab="search"]').classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      document.getElementById('search').classList.add('active');
+
+      // Set search input and perform search
+      searchInput.value = artistName;
+      hideAutocomplete();
+      performSearch();
+    });
+  });
+
   return div;
 }
 
@@ -310,7 +333,7 @@ function createSearchResultElement(result) {
    let html = `
     <h3>${escapeHtml(result.track)}</h3>
     <div class="playlist-meta">
-      <span><strong>Artist:</strong> ${escapeHtml(result.artist)}</span>
+      <span><strong>Artist:</strong> <a href="#" class="artist-link" data-artist="${escapeHtml(result.artist)}">${escapeHtml(result.artist)}</a></span>
       <span><strong>Album:</strong> ${escapeHtml(result.album)}</span>
       <span><strong>Playlist:</strong> ${escapeHtml(result.playlist)}</span>
       <span><strong>Author:</strong> ${escapeHtml(result.author)}</span>
@@ -318,8 +341,21 @@ function createSearchResultElement(result) {
     </div>
     <p><small>Genre: ${result.genre || 'N/A'} | Duration: ${result.time || 'N/A'} | Track #${result.trackNumber || 'N/A'}</small></p>
   `;
-  
+
   div.innerHTML = html;
+
+  // Add click event listener to artist link
+  const artistLink = div.querySelector('.artist-link');
+  if (artistLink) {
+    artistLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const artistName = e.target.dataset.artist;
+      searchInput.value = artistName;
+      hideAutocomplete();
+      performSearch();
+    });
+  }
+
   return div;
 }
 
