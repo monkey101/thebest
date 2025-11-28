@@ -369,6 +369,19 @@ header p {
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
+/* Charts Container */
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.charts-container iframe {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
 /* Loading and Empty States */
 .loading {
   text-align: center;
