@@ -207,6 +207,25 @@ header p {
   text-decoration: underline;
 }
 
+.spotify-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  color: #1DB954;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+
+.spotify-link:hover {
+  color: #1ed760;
+  transform: scale(1.1);
+}
+
+.spotify-link svg {
+  display: block;
+}
+
 .tracks-count {
   background: #667eea;
   color: white;
