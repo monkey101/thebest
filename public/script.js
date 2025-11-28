@@ -43,11 +43,13 @@ function switchToTab(tabName, params = {}, clearAll = false) {
 // Load URL state on page load
 document.addEventListener('DOMContentLoaded', () => {
   loadYears();
+  loadAuthors();
 
   // Parse URL parameters
   const params = new URLSearchParams(window.location.search);
   const tab = params.get('tab');
   const year = params.get('year');
+  const author = params.get('author');
   const search = params.get('q');
 
   // Handle tab navigation
@@ -60,6 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         document.getElementById('yearSelect').value = year;
         loadPlaylistsByYear(year);
+      }, 500);
+    }
+
+    // Handle author parameter for playlists tab
+    if (tab === 'playlists' && author) {
+      // Wait for authors to load, then load playlists for the author
+      setTimeout(() => {
+        document.getElementById('authorSelect').value = author;
+        loadPlaylistsByAuthor(author);
       }, 500);
     }
 
@@ -83,17 +94,17 @@ async function loadYears() {
   try {
     const response = await fetch('/api/years');
     const years = await response.json();
-    
+
     const yearsList = document.getElementById('yearsList');
     const yearSelect = document.getElementById('yearSelect');
-    
+
     yearsList.innerHTML = '';
-    
+
     if (years.length === 0) {
       yearsList.innerHTML = '<p class="loading">No playlists found</p>';
       return;
     }
-    
+
     // Create year buttons for Years tab
     years.forEach(year => {
       const btn = document.createElement('button');
@@ -101,7 +112,7 @@ async function loadYears() {
       btn.textContent = year;
       btn.addEventListener('click', () => loadPlaylistsByYear(year));
       yearsList.appendChild(btn);
-      
+
       // Add to select dropdown
       const option = document.createElement('option');
       option.value = year;
@@ -114,27 +125,52 @@ async function loadYears() {
   }
 }
 
+// Load all authors
+async function loadAuthors() {
+  try {
+    const response = await fetch('/api/authors');
+    const authors = await response.json();
+
+    const authorSelect = document.getElementById('authorSelect');
+
+    if (authors.length === 0) {
+      return;
+    }
+
+    // Add to select dropdown
+    authors.forEach(author => {
+      const option = document.createElement('option');
+      option.value = author;
+      option.textContent = author;
+      authorSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading authors:', error);
+  }
+}
+
 // Load playlists for a specific year
 async function loadPlaylistsByYear(year) {
   try {
     console.log(year);
     document.getElementById('yearSelect').value = year;
+    document.getElementById('authorSelect').value = '';
 
     // Switch to playlists tab with year parameter
     switchToTab('playlists', { year });
-    
+
     const response = await fetch(`/api/playlists?year=${year}`);
     const playlists = await response.json();
     console.log(response.json.toString);
-    
+
     const playlistsList = document.getElementById('playlistsList');
     playlistsList.innerHTML = '';
-    
+
     if (playlists.length === 0) {
       playlistsList.innerHTML = `<p class="loading">No playlists found for ${year}</p>`;
       return;
     }
-    
+
     playlists.forEach(playlist => {
       const item = createPlaylistElement(playlist);
       playlistsList.appendChild(item);
@@ -145,10 +181,48 @@ async function loadPlaylistsByYear(year) {
   }
 }
 
+// Load playlists for a specific author
+async function loadPlaylistsByAuthor(author) {
+  try {
+    console.log(author);
+    document.getElementById('authorSelect').value = author;
+    document.getElementById('yearSelect').value = '';
+
+    // Switch to playlists tab with author parameter
+    switchToTab('playlists', { author });
+
+    const response = await fetch(`/api/playlists-by-author?author=${encodeURIComponent(author)}`);
+    const playlists = await response.json();
+
+    const playlistsList = document.getElementById('playlistsList');
+    playlistsList.innerHTML = '';
+
+    if (playlists.length === 0) {
+      playlistsList.innerHTML = `<p class="loading">No playlists found for ${escapeHtml(author)}</p>`;
+      return;
+    }
+
+    playlists.forEach(playlist => {
+      const item = createPlaylistElement(playlist);
+      playlistsList.appendChild(item);
+    });
+  } catch (error) {
+    console.error('Error loading playlists by author:', error);
+    document.getElementById('playlistsList').innerHTML = '<p class="error">Error loading playlists</p>';
+  }
+}
+
 // Load playlists when year is selected from dropdown
 document.getElementById('yearSelect')?.addEventListener('change', (e) => {
   if (e.target.value) {
     loadPlaylistsByYear(e.target.value);
+  }
+});
+
+// Load playlists when author is selected from dropdown
+document.getElementById('authorSelect')?.addEventListener('change', (e) => {
+  if (e.target.value) {
+    loadPlaylistsByAuthor(e.target.value);
   }
 });
 

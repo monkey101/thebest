@@ -131,9 +131,13 @@ header p {
 /* Playlists List */
 .controls {
   margin-bottom: 25px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
-#yearSelect {
+#yearSelect,
+#authorSelect {
   padding: 10px 15px;
   font-size: 1em;
   border: 2px solid #ddd;
@@ -141,9 +145,12 @@ header p {
   cursor: pointer;
   background: white;
   transition: border-color 0.3s ease;
+  flex: 1;
+  min-width: 200px;
 }
 
-#yearSelect:focus {
+#yearSelect:focus,
+#authorSelect:focus {
   outline: none;
   border-color: #667eea;
 }
