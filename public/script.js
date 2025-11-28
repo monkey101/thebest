@@ -2,20 +2,80 @@
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     const tabName = e.target.dataset.tab;
-    
-    // Update active tab button
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    
-    // Update active tab content
-    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-    document.getElementById(tabName).classList.add('active');
+    // Clear all parameters when clicking top-level tabs
+    switchToTab(tabName, {}, true);
   });
 });
 
-// Load years on page load
+// Function to switch tabs and update URL
+function switchToTab(tabName, params = {}, clearAll = false) {
+  // Update active tab button
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+
+  // Update active tab content
+  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+  document.getElementById(tabName)?.classList.add('active');
+
+  // Update URL
+  const url = new URL(window.location);
+
+  if (clearAll) {
+    // Clear all search params and only set tab
+    url.search = '';
+    url.searchParams.set('tab', tabName);
+  } else {
+    url.searchParams.set('tab', tabName);
+
+    // Add additional params
+    Object.keys(params).forEach(key => {
+      if (params[key]) {
+        url.searchParams.set(key, params[key]);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+  }
+
+  window.history.pushState({}, '', url);
+}
+
+// Load URL state on page load
 document.addEventListener('DOMContentLoaded', () => {
   loadYears();
+
+  // Parse URL parameters
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  const year = params.get('year');
+  const search = params.get('q');
+
+  // Handle tab navigation
+  if (tab) {
+    switchToTab(tab);
+
+    // Handle year parameter for playlists tab
+    if (tab === 'playlists' && year) {
+      // Wait for years to load, then load playlists for the year
+      setTimeout(() => {
+        document.getElementById('yearSelect').value = year;
+        loadPlaylistsByYear(year);
+      }, 500);
+    }
+
+    // Handle search parameter for search tab
+    if (tab === 'search' && search) {
+      setTimeout(() => {
+        searchInput.value = search;
+        performSearch();
+      }, 100);
+    }
+  }
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', () => {
+    location.reload();
+  });
 });
 
 // Load all years
@@ -59,12 +119,9 @@ async function loadPlaylistsByYear(year) {
   try {
     console.log(year);
     document.getElementById('yearSelect').value = year;
-    
-    // Switch to playlists tab
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('[data-tab="playlists"]').classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-    document.getElementById('playlists').classList.add('active');
+
+    // Switch to playlists tab with year parameter
+    switchToTab('playlists', { year });
     
     const response = await fetch(`/api/playlists?year=${year}`);
     const playlists = await response.json();
@@ -152,12 +209,6 @@ function createPlaylistElement(playlist) {
       e.preventDefault();
       const artistName = e.target.dataset.artist;
 
-      // Switch to search tab
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-tab="search"]').classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-      document.getElementById('search').classList.add('active');
-
       // Set search input and perform search
       searchInput.value = artistName;
       hideAutocomplete();
@@ -171,12 +222,6 @@ function createPlaylistElement(playlist) {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const albumName = e.target.dataset.album;
-
-      // Switch to search tab
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-tab="search"]').classList.add('active');
-      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-      document.getElementById('search').classList.add('active');
 
       // Set search input and perform search
       searchInput.value = albumName;
@@ -327,15 +372,18 @@ function updateAutocompleteSelection(items) {
 
 async function performSearch() {
   const query = document.getElementById('searchInput').value.trim();
-  
+
   if (!query) {
     document.getElementById('searchResults').innerHTML = '<p class="loading">Enter a search query</p>';
     return;
   }
-  
+
+  // Update URL with search query
+  switchToTab('search', { q: query });
+
   try {
     document.getElementById('searchResults').innerHTML = '<p class="loading">Searching...</p>';
-    
+
     const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     const results = await response.json();
     
