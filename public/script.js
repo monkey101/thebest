@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const author = params.get('author');
   const search = params.get('q');
   const chartYear = params.get('chartYear');
+  const chartAuthor = params.get('chartAuthor');
 
   // Handle tab navigation
   if (tab) {
@@ -83,14 +84,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 100);
     }
 
-    // Handle chartYear parameter for charts tab
-    if (tab === 'charts' && chartYear) {
+    // Handle chartYear and chartAuthor parameters for charts tab
+    if (tab === 'charts' && (chartYear || chartAuthor)) {
       setTimeout(() => {
-        const chartYearSelect = document.getElementById('chartYearSelect');
-        if (chartYearSelect) {
-          chartYearSelect.value = chartYear;
-          applyChartYearFilter(chartYear);
+        if (chartYear) {
+          const chartYearSelect = document.getElementById('chartYearSelect');
+          if (chartYearSelect) {
+            chartYearSelect.value = chartYear;
+          }
         }
+        if (chartAuthor) {
+          const chartAuthorSelect = document.getElementById('chartAuthorSelect');
+          if (chartAuthorSelect) {
+            chartAuthorSelect.value = chartAuthor;
+          }
+        }
+        applyChartFilters();
       }, 1000); // Wait for charts to render
     }
   }
@@ -679,10 +688,11 @@ function renderCharts() {
 
   window.chartsRendered = true;
 
-  // Populate year dropdown after charts render
-  // Use setTimeout to ensure years have been loaded
+  // Populate dropdowns after charts render
+  // Use setTimeout to ensure data has been loaded
   setTimeout(() => {
     populateChartYearDropdown();
+    populateChartAuthorDropdown();
   }, 500);
 }
 
@@ -714,8 +724,36 @@ async function populateChartYearDropdown() {
   }
 }
 
-// Apply year filter to chart 4
-function applyChartYearFilter(year) {
+// Populate the chart author filter dropdown
+async function populateChartAuthorDropdown() {
+  const chartAuthorSelect = document.getElementById('chartAuthorSelect');
+
+  if (!chartAuthorSelect) {
+    console.warn('Chart author select element not found');
+    return;
+  }
+
+  try {
+    // Fetch authors from the API
+    const response = await fetch('/api/authors');
+    const authors = await response.json();
+
+    // Add author options
+    authors.forEach(author => {
+      const option = document.createElement('option');
+      option.value = author;
+      option.textContent = author;
+      chartAuthorSelect.appendChild(option);
+    });
+
+    console.log(`Populated chart author dropdown with ${authors.length} authors`);
+  } catch (error) {
+    console.error('Error populating chart author dropdown:', error);
+  }
+}
+
+// Apply filters to chart 4
+function applyChartFilters() {
   const chart4 = window.chartInstances[3]; // Chart 4 at index 3
 
   if (!chart4) {
@@ -724,12 +762,22 @@ function applyChartYearFilter(year) {
   }
 
   try {
-    const filter = year && year !== '' ? { year: year } : {};
+    const year = document.getElementById('chartYearSelect')?.value;
+    const author = document.getElementById('chartAuthorSelect')?.value;
+
+    // Build filter object
+    const filter = {};
+    if (year && year !== '') {
+      filter.year = year;
+    }
+    if (author && author !== '') {
+      filter.author = author;
+    }
 
     chart4.setFilter(filter)
       .then(() => {
-        console.log(`Chart 4 filter applied: ${year || 'all years'}`);
-        updateFilterBadge(year);
+        console.log(`Chart 4 filter applied:`, filter);
+        updateFilterBadge(year, author);
       })
       .catch(err => {
         console.error('Error applying filter to chart 4:', err);
@@ -740,13 +788,21 @@ function applyChartYearFilter(year) {
 }
 
 // Update the filter badge display
-function updateFilterBadge(year) {
+function updateFilterBadge(year, author) {
   const badge = document.getElementById('chartFilterBadge');
 
   if (!badge) return;
 
+  const filters = [];
   if (year && year !== '') {
-    badge.innerHTML = `Filtering by: <strong>${year}</strong>`;
+    filters.push(`Year: <strong>${year}</strong>`);
+  }
+  if (author && author !== '') {
+    filters.push(`Author: <strong>${author}</strong>`);
+  }
+
+  if (filters.length > 0) {
+    badge.innerHTML = `Filtering by ${filters.join(', ')}`;
     badge.style.display = 'block';
   } else {
     badge.style.display = 'none';
@@ -764,15 +820,48 @@ if (chartsTab) {
 
 // Event listener for chart year filter dropdown
 document.getElementById('chartYearSelect')?.addEventListener('change', (e) => {
-  const selectedYear = e.target.value;
-  applyChartYearFilter(selectedYear);
+  applyChartFilters();
 
   // Update URL parameter
   const url = new URL(window.location);
+  const selectedYear = e.target.value;
+  const selectedAuthor = document.getElementById('chartAuthorSelect')?.value;
+
   if (selectedYear) {
     url.searchParams.set('chartYear', selectedYear);
   } else {
     url.searchParams.delete('chartYear');
   }
+
+  if (selectedAuthor) {
+    url.searchParams.set('chartAuthor', selectedAuthor);
+  } else {
+    url.searchParams.delete('chartAuthor');
+  }
+
+  window.history.pushState({}, '', url);
+});
+
+// Event listener for chart author filter dropdown
+document.getElementById('chartAuthorSelect')?.addEventListener('change', (e) => {
+  applyChartFilters();
+
+  // Update URL parameter
+  const url = new URL(window.location);
+  const selectedYear = document.getElementById('chartYearSelect')?.value;
+  const selectedAuthor = e.target.value;
+
+  if (selectedYear) {
+    url.searchParams.set('chartYear', selectedYear);
+  } else {
+    url.searchParams.delete('chartYear');
+  }
+
+  if (selectedAuthor) {
+    url.searchParams.set('chartAuthor', selectedAuthor);
+  } else {
+    url.searchParams.delete('chartAuthor');
+  }
+
   window.history.pushState({}, '', url);
 });
