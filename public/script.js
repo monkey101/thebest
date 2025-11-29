@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const year = params.get('year');
   const author = params.get('author');
   const search = params.get('q');
+  const chartYear = params.get('chartYear');
 
   // Handle tab navigation
   if (tab) {
@@ -80,6 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.value = search;
         performSearch();
       }, 100);
+    }
+
+    // Handle chartYear parameter for charts tab
+    if (tab === 'charts' && chartYear) {
+      setTimeout(() => {
+        const chartYearSelect = document.getElementById('chartYearSelect');
+        if (chartYearSelect) {
+          chartYearSelect.value = chartYear;
+          applyChartYearFilter(chartYear);
+        }
+      }, 1000); // Wait for charts to render
     }
   }
 
@@ -630,6 +642,9 @@ const chartIds = [
   '40590a31-8673-4825-ad0e-c9653b6da9b0'
 ];
 
+// Global storage for chart instances
+window.chartInstances = [];
+
 // Render charts when Charts tab is activated
 function renderCharts() {
   if (window.chartsRendered) {
@@ -650,13 +665,92 @@ function renderCharts() {
       maxDataAge: 14400
     });
 
+    // Store chart instance
+    window.chartInstances[index] = chart;
+
     chart.render(document.getElementById(`chart-${index + 1}`))
+      .then(() => {
+        console.log(`Chart ${index + 1} rendered successfully`);
+      })
       .catch(err => {
         console.error(`Error rendering chart ${index + 1}:`, err);
       });
   });
 
   window.chartsRendered = true;
+
+  // Populate year dropdown after charts render
+  // Use setTimeout to ensure years have been loaded
+  setTimeout(() => {
+    populateChartYearDropdown();
+  }, 500);
+}
+
+// Populate the chart year filter dropdown
+async function populateChartYearDropdown() {
+  const chartYearSelect = document.getElementById('chartYearSelect');
+
+  if (!chartYearSelect) {
+    console.warn('Chart year select element not found');
+    return;
+  }
+
+  try {
+    // Fetch years from the API
+    const response = await fetch('/api/years');
+    const years = await response.json();
+
+    // Add year options
+    years.forEach(year => {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      chartYearSelect.appendChild(option);
+    });
+
+    console.log(`Populated chart year dropdown with ${years.length} years`);
+  } catch (error) {
+    console.error('Error populating chart year dropdown:', error);
+  }
+}
+
+// Apply year filter to chart 4
+function applyChartYearFilter(year) {
+  const chart4 = window.chartInstances[3]; // Chart 4 at index 3
+
+  if (!chart4) {
+    console.error('Chart 4 not found. Charts may not be rendered yet.');
+    return;
+  }
+
+  try {
+    const filter = year && year !== '' ? { year: year } : {};
+
+    chart4.setFilter(filter)
+      .then(() => {
+        console.log(`Chart 4 filter applied: ${year || 'all years'}`);
+        updateFilterBadge(year);
+      })
+      .catch(err => {
+        console.error('Error applying filter to chart 4:', err);
+      });
+  } catch (error) {
+    console.error('Exception setting chart filter:', error);
+  }
+}
+
+// Update the filter badge display
+function updateFilterBadge(year) {
+  const badge = document.getElementById('chartFilterBadge');
+
+  if (!badge) return;
+
+  if (year && year !== '') {
+    badge.innerHTML = `Filtering by: <strong>${year}</strong>`;
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 
 // Add event listener for Charts tab to render charts when first opened
@@ -667,3 +761,18 @@ if (chartsTab) {
     setTimeout(renderCharts, 100);
   });
 }
+
+// Event listener for chart year filter dropdown
+document.getElementById('chartYearSelect')?.addEventListener('change', (e) => {
+  const selectedYear = e.target.value;
+  applyChartYearFilter(selectedYear);
+
+  // Update URL parameter
+  const url = new URL(window.location);
+  if (selectedYear) {
+    url.searchParams.set('chartYear', selectedYear);
+  } else {
+    url.searchParams.delete('chartYear');
+  }
+  window.history.pushState({}, '', url);
+});
