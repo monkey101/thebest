@@ -5,8 +5,12 @@ A database-driven website to store and browse music playlists organized by year,
 ## Features
 
 - **View playlists by year** - Browse all playlists created in a specific year
+- **View playlists by author** - Browse all playlists filtered by author
 - **View available years** - See which years have playlists
 - **Full-text search** - Search for tracks using MongoDB's full-text search
+- **Expandable track lists** - Playlists display the first 10 tracks with a clickable link to show/hide remaining tracks
+- **Interactive track details** - Click on artist or album names to search for related tracks
+- **Spotify integration** - Direct links to search for tracks on Spotify
 - **Database-driven** - All data stored in MongoDB, read-only web interface
 - **Vercel deployment** - Easily deploy to Vercel with serverless functions
 
@@ -15,11 +19,12 @@ A database-driven website to store and browse music playlists organized by year,
 ```
 thebestai/
 ├── api/
-│   ├── _db.js            # MongoDB connection and schema helper
-│   ├── years.js          # GET /api/years
-│   ├── playlists.js      # GET /api/playlists?year=YYYY
-│   ├── search.js         # GET /api/search?q=QUERY
-│   └── health.js         # GET /api/health
+│   ├── _db.js                 # MongoDB connection and schema helper
+│   ├── years.js               # GET /api/years
+│   ├── playlists.js           # GET /api/playlists?year=YYYY
+│   ├── playlists-by-author.js # GET /api/playlists-by-author?author=NAME
+│   ├── search.js              # GET /api/search?q=QUERY
+│   └── health.js              # GET /api/health
 ├── public/
 │   ├── index.html        # Main page
 │   ├── style.css         # Styling
@@ -99,20 +104,10 @@ The MongoDB `best` collection stores individual track documents with the followi
 
 **Note:** Use `vercel dev` for local testing, not `npm start`. The app uses Vercel serverless API routes (`api/` directory) for backend functionality.
 
-### MongoDB Full-Text Search Setup
+### MongoDB Atlas Full-Text Search Setup
 
-Ensure your MongoDB collection has a text index on the searchable fields:
+Ensure your MongoDB collection has a text index on the searchable fields. The text index definition can be found= [here](indexDefinition.json)
 
-```javascript
-db.best.createIndex({
-  "track": "text",
-  "artist": "text",
-  "album": "text",
-  "playlist": "text",
-  "author": "text",
-  "genre": "text"
-})
-```
 
 ## Deployment to Vercel
 
@@ -155,9 +150,24 @@ db.best.createIndex({
 ## API Endpoints
 
 - `GET /api/years` - Get all years with playlists
-- `GET /api/playlists/:year` - Get all playlists for a specific year
+- `GET /api/playlists?year=YYYY` - Get all playlists for a specific year
+- `GET /api/playlists-by-author?author=NAME` - Get all playlists by a specific author
 - `GET /api/search?q=query` - Search tracks using MongoDB full-text search
 - `GET /api/health` - Health check endpoint
+
+## User Interface Features
+
+### Playlist Display
+- Each playlist shows the first 10 tracks by default
+- If a playlist has more than 10 tracks, a clickable "+ X more tracks (click to show)" link appears
+- Clicking the link expands to show all remaining tracks
+- Clicking "Show less" collapses the expanded tracks back
+
+### Interactive Elements
+- **Artist names** - Clickable links that trigger a search for that artist
+- **Album names** - Clickable links that trigger a search for that album
+- **Spotify links** - Each track has a direct link to search for it on Spotify
+- **URL parameters** - Year and author views support shareable URLs (e.g., `?year=2007`, `?author=Alex`)
 
 ## Important Notes
 
