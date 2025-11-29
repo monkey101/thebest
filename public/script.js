@@ -616,3 +616,54 @@ function escapeHtml(text) {
   }
   return "";
 }
+
+// MongoDB Charts Embedding SDK
+const chartsBaseUrl = 'https://charts.mongodb.com/charts-monkey101-whtyj';
+
+// Chart IDs
+const chartIds = [
+  'b68df329-df86-4368-a429-82f8f1416329',
+  '845392e2-e5cd-4ba3-bc37-7ba9ea7fb72d',
+  '620d86cb-6ea8-4baf-8b41-cad1b7f09b2f',
+  '620d86cb-6ea8-45cd-81e1-cad1b7f09b30',
+  '620d86cb-6ea8-4ffc-8250-cad1b7f09b2b',
+  '40590a31-8673-4825-ad0e-c9653b6da9b0'
+];
+
+// Render charts when Charts tab is activated
+function renderCharts() {
+  if (window.chartsRendered) {
+    return; // Charts already rendered
+  }
+
+  const sdk = new ChartsEmbedSDK({
+    baseUrl: chartsBaseUrl
+  });
+
+  chartIds.forEach((chartId, index) => {
+    const chart = sdk.createChart({
+      chartId: chartId,
+      height: '480px',
+      width: '640px',
+      theme: 'light',
+      autoRefresh: true,
+      maxDataAge: 14400
+    });
+
+    chart.render(document.getElementById(`chart-${index + 1}`))
+      .catch(err => {
+        console.error(`Error rendering chart ${index + 1}:`, err);
+      });
+  });
+
+  window.chartsRendered = true;
+}
+
+// Add event listener for Charts tab to render charts when first opened
+const chartsTab = document.querySelector('[data-tab="charts"]');
+if (chartsTab) {
+  chartsTab.addEventListener('click', () => {
+    // Delay rendering slightly to ensure tab is visible
+    setTimeout(renderCharts, 100);
+  });
+}

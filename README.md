@@ -11,6 +11,7 @@ A database-driven website to store and browse music playlists organized by year,
 - **Expandable track lists** - Playlists display the first 10 tracks with a clickable link to show/hide remaining tracks
 - **Interactive track details** - Click on artist or album names to search for related tracks
 - **Spotify integration** - Direct links to search for tracks on Spotify
+- **Charts** - Charts, driven by MongoDB Atlas Charts, provide visualizations of data over time
 - **Database-driven** - All data stored in MongoDB, read-only web interface
 - **Vercel deployment** - Easily deploy to Vercel with serverless functions
 
@@ -106,7 +107,7 @@ The MongoDB `best` collection stores individual track documents with the followi
 
 ### MongoDB Atlas Full-Text Search Setup
 
-Ensure your MongoDB collection has a text index on the searchable fields. The text index definition can be found= [here](indexDefinition.json)
+Ensure your MongoDB collection has a text index on the searchable fields. The text index definition can be found [here](indexDefinition.json)
 
 
 ## Deployment to Vercel

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Best - Music Playlists</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@mongodb-js/charts-embed-dom@3"></script>
 </head>
 <body>
   <div class="container">
@@ -68,12 +69,12 @@
     <section id="charts" class="tab-content">
       <h2>Music Library Charts</h2>
       <div class="charts-container">
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=b68df329-df86-4368-a429-82f8f1416329&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=845392e2-e5cd-4ba3-bc37-7ba9ea7fb72d&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=620d86cb-6ea8-4baf-8b41-cad1b7f09b2f&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=620d86cb-6ea8-45cd-81e1-cad1b7f09b30&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=620d86cb-6ea8-4ffc-8250-cad1b7f09b2b&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-monkey101-whtyj/embed/charts?id=40590a31-8673-4825-ad0e-c9653b6da9b0&maxDataAge=14400&theme=light&autoRefresh=true"></iframe>
+        <div id="chart-1" class="chart"></div>
+        <div id="chart-2" class="chart"></div>
+        <div id="chart-3" class="chart"></div>
+        <div id="chart-4" class="chart"></div>
+        <div id="chart-5" class="chart"></div>
+        <div id="chart-6" class="chart"></div>
       </div>
     </section>
   </div>
