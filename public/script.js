@@ -643,12 +643,12 @@ const chartsBaseUrl = 'https://charts.mongodb.com/charts-monkey101-whtyj';
 
 // Chart IDs
 const chartIds = [
-  'b68df329-df86-4368-a429-82f8f1416329',
-  '845392e2-e5cd-4ba3-bc37-7ba9ea7fb72d',
-  '620d86cb-6ea8-4baf-8b41-cad1b7f09b2f',
-  '620d86cb-6ea8-45cd-81e1-cad1b7f09b30',
-  '620d86cb-6ea8-4ffc-8250-cad1b7f09b2b',
-  '40590a31-8673-4825-ad0e-c9653b6da9b0'
+  'b68df329-df86-4368-a429-82f8f1416329',     // Chart 1 - Filterable
+  '845392e2-e5cd-4ba3-bc37-7ba9ea7fb72d',     // Chart 2 - Filterable
+  '620d86cb-6ea8-45cd-81e1-cad1b7f09b30',     // Chart 3 - Filterable (moved from position 4)
+  '620d86cb-6ea8-4baf-8b41-cad1b7f09b2f',     // Chart 4 - Not filterable
+  '620d86cb-6ea8-4ffc-8250-cad1b7f09b2b',     // Chart 5 - Not filterable
+  '40590a31-8673-4825-ad0e-c9653b6da9b0'      // Chart 6 - Not filterable
 ];
 
 // Global storage for chart instances
@@ -752,38 +752,42 @@ async function populateChartAuthorDropdown() {
   }
 }
 
-// Apply filters to chart 4
+// Apply filters to charts 1-3
 function applyChartFilters() {
-  const chart4 = window.chartInstances[3]; // Chart 4 at index 3
+  const year = document.getElementById('chartYearSelect')?.value;
+  const author = document.getElementById('chartAuthorSelect')?.value;
 
-  if (!chart4) {
-    console.error('Chart 4 not found. Charts may not be rendered yet.');
-    return;
+  // Build filter object
+  const filter = {};
+  if (year && year !== '') {
+    filter.year = year;
+  }
+  if (author && author !== '') {
+    filter.author = author;
   }
 
   try {
-    const year = document.getElementById('chartYearSelect')?.value;
-    const author = document.getElementById('chartAuthorSelect')?.value;
+    // Apply filter to charts 1-3 (indices 0, 1, 2)
+    for (let i = 0; i < 3; i++) {
+      const chart = window.chartInstances[i];
 
-    // Build filter object
-    const filter = {};
-    if (year && year !== '') {
-      filter.year = year;
-    }
-    if (author && author !== '') {
-      filter.author = author;
+      if (!chart) {
+        console.warn(`Chart ${i + 1} not found. Charts may not be rendered yet.`);
+        continue;
+      }
+
+      chart.setFilter(filter)
+        .then(() => {
+          console.log(`Chart ${i + 1} filter applied:`, filter);
+        })
+        .catch(err => {
+          console.error(`Error applying filter to chart ${i + 1}:`, err);
+        });
     }
 
-    chart4.setFilter(filter)
-      .then(() => {
-        console.log(`Chart 4 filter applied:`, filter);
-        updateFilterBadge(year, author);
-      })
-      .catch(err => {
-        console.error('Error applying filter to chart 4:', err);
-      });
+    updateFilterBadge(year, author);
   } catch (error) {
-    console.error('Exception setting chart filter:', error);
+    console.error('Exception setting chart filters:', error);
   }
 }
 

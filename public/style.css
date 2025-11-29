@@ -380,8 +380,46 @@ header p {
 .charts-container {
   display: flex;
   flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  width: 100%;
+}
+
+.filterable-charts-section,
+.static-charts-section {
+  display: flex;
+  flex-direction: column;
   gap: 30px;
   align-items: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.filterable-charts-section {
+  background: #f0f8ff;
+  border: 2px solid #667eea;
+}
+
+.static-charts-section {
+  background: #f9f9f9;
+  border: 2px solid #ddd;
+}
+
+.section-label {
+  color: #333;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.filterable-charts-section .section-label {
+  color: #667eea;
+}
+
+.static-charts-section .section-label {
+  color: #666;
 }
 
 .charts-container iframe {
@@ -404,7 +442,8 @@ header p {
   justify-content: flex-start;
 }
 
-#chartYearSelect {
+#chartYearSelect,
+#chartAuthorSelect {
   min-width: 200px;
   max-width: 300px;
 }
