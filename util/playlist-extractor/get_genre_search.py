@@ -24,7 +24,7 @@ CANONICAL_GENRES = {
     "Hip-hop/Rap": ["hip hop", "rap", "trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
     "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass", "electro", "garage house"],
     "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal"],
-    "R&B": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
+    "R&B/Soul": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
     "Folk": ["folk", "singer-songwriter", "americana"],
     "Jazz": ["jazz", "swing", "bebop", "latin jazz"],
     "Country": ["country", "alt-country", "bluegrass", "country rock","alt-country"],
