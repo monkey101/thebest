@@ -1,13 +1,22 @@
 const connectDB = require('./_db');
 
 module.exports = async (req, res) => {
-  const { year } = req.query;
-  if (!year) {
-    return res.status(400).json({ error: 'Year is required' });
+  const { year, author } = req.query;
+
+  // At least one filter is required
+  if (!year && !author) {
+    return res.status(400).json({ error: 'Year or author is required' });
   }
+
   try {
     const Track = await connectDB();
-    const tracks = await Track.find({ year }).sort({ playlist: 1, trackNumber: 1 });
+
+    // Build filter query
+    const filter = {};
+    if (year) filter.year = year;
+    if (author) filter.author = author;
+
+    const tracks = await Track.find(filter).sort({ playlist: 1, trackNumber: 1 });
     const playlistsMap = {};
     tracks.forEach(track => {
       if (!playlistsMap[track.playlist]) {
@@ -25,7 +34,7 @@ module.exports = async (req, res) => {
     res.status(200).json(playlists);
   } catch (error) {
     console.error('Error fetching playlists:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || 'Failed to fetch playlists',
       details: error.stack
     });
