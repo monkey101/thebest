@@ -673,7 +673,8 @@ const chartIds = [
   '620d86cb-6ea8-45cd-81e1-cad1b7f09b30',     // Chart 3 - Filterable (moved from position 4)
   '620d86cb-6ea8-4baf-8b41-cad1b7f09b2f',     // Chart 4 - Not filterable
   '620d86cb-6ea8-4ffc-8250-cad1b7f09b2b',     // Chart 5 - Not filterable
-  '40590a31-8673-4825-ad0e-c9653b6da9b0'      // Chart 6 - Not filterable
+  '40590a31-8673-4825-ad0e-c9653b6da9b0',     // Chart 6 - Not filterable
+  '83a379ad-49fe-4413-9a5c-05edbd588985'      // Chart 7 - Not filterable
 ];
 
 // Global storage for chart instances
