@@ -19,17 +19,15 @@ if not API_KEY:
 # Canonical genre taxonomy (~30 genres)
 # ---------------------------------------------------------
 CANONICAL_GENRES = {
-    "Rock": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock"],
-    "Pop": ["pop", "dance", "synthpop", "k-pop", "electropop", "j-pop"],
+    "Rock/Pop": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock", "pop", "dance", "synthpop", "k-pop", "electropop", "j-pop"],
     "Hip-hop/Rap": ["hip hop", "rap", "trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
     "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass", "electro", "garage house"],
     "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal"],
     "R&B/Soul": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
-    "Folk": ["folk", "singer-songwriter", "americana"],
     "Jazz": ["jazz", "swing", "bebop", "latin jazz"],
     "Country": ["country", "alt-country", "bluegrass", "country rock","alt-country"],
     "Reggae": ["reggae", "ska", "dub", "dancehall"],
-    "Blues": ["blues"],
+    "Blues/Folk": ["blues", "folk", "singer-songwriter", "americana"],
     "Gospel": ["gospel", "christian", "spritiuals"],
     "Classical": ["classical", "orchestral", "baroque"],
     "Latin": ["latin", "reggaeton", "bachata", "salsa", "cumbia", "latin soul"],

@@ -2,6 +2,15 @@
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     const tabName = e.target.dataset.tab;
+
+    // Reset playlist dropdowns when leaving playlists tab
+    if (tabName !== 'playlists') {
+      const yearSelect = document.getElementById('yearSelect');
+      const authorSelect = document.getElementById('authorSelect');
+      if (yearSelect) yearSelect.value = '';
+      if (authorSelect) authorSelect.value = '';
+    }
+
     // Clear all parameters when clicking top-level tabs
     switchToTab(tabName, {}, true);
   });
