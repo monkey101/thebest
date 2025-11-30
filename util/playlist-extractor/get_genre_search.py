@@ -16,27 +16,29 @@ if not API_KEY:
 
 
 # ---------------------------------------------------------
-# Canonical genre taxonomy (example ~30 genres)
+# Canonical genre taxonomy (~30 genres)
 # ---------------------------------------------------------
 CANONICAL_GENRES = {
-    "Rock": ["rock", "alternative", "indie", "hard rock", "classic rock", "punk", "grunge"],
+    "Rock": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock"],
     "Pop": ["pop", "dance", "synthpop", "k-pop", "electropop", "j-pop"],
-    "Hip Hop": ["hip hop", "rap", "trap", "boom bap"],
-    "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass"],
+    "Hip-hop/Rap": ["hip hop", "rap", "trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
+    "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass", "electro", "garage house"],
     "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal"],
-    "R&B": ["r&b", "rnb", "soul", "neo-soul"],
+    "R&B": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
     "Folk": ["folk", "singer-songwriter", "americana"],
-    "Jazz": ["jazz", "swing", "bebop"],
-    "Country": ["country", "alt-country"],
-    "Reggae": ["reggae", "ska", "dub"],
+    "Jazz": ["jazz", "swing", "bebop", "latin jazz"],
+    "Country": ["country", "alt-country", "bluegrass", "country rock","alt-country"],
+    "Reggae": ["reggae", "ska", "dub", "dancehall"],
     "Blues": ["blues"],
+    "Gospel": ["gospel", "christian", "spritiuals"],
     "Classical": ["classical", "orchestral", "baroque"],
-    "Latin": ["latin", "reggaeton", "bachata", "salsa"],
-    "World": ["world", "afrobeats", "celtic"],
+    "Latin": ["latin", "reggaeton", "bachata", "salsa", "cumbia", "latin soul"],
+    "World": ["world", "afrobeats", "hong kong", "celtic","ghana", "afrobeat", "afropop", "lebanon", "cabo verde", "cape verde", "arab", "nigerian", "hawaiian", "african", "balkan", "croatia", "french", "france", "congo-brazzaville", "italian", "traditional", "haiti", "spanish", "korean", "calypso","bollywood", "pakistani"],
+    "Brazilian": ["brazilian", "brazil", "bossa nova", "samba", "mpb"],
     "Soundtrack": ["soundtrack", "score"],
+    "Comedy/Spoken Word": ["comedy", "spoken word", "stand-up", "stand up"],
 }
 
-# Build reverse lookup
 TAG_TO_CANONICAL = {
     tag: canonical
     for canonical, tags in CANONICAL_GENRES.items()
@@ -47,32 +49,22 @@ TAG_TO_CANONICAL = {
 # Last.fm API helpers
 # ---------------------------------------------------------
 def lastfm_get_info(artist, track):
-    """Fetches track.getInfo from Last.fm"""
     url = (
         "https://ws.audioscrobbler.com/2.0/"
         f"?method=track.getInfo&api_key={API_KEY}"
         f"&artist={quote_plus(artist)}&track={quote_plus(track)}&format=json"
     )
-
     r = requests.get(url, timeout=10)
     data = r.json()
-
-    # Structure when missing:
-    # {'error': 6, 'message': 'Track not found'}
-    if "track" not in data:
-        return None
-
-    return data["track"]
+    return data.get("track")
 
 
 def lastfm_search(artist, track):
-    """Fallback search: returns the best canonical match"""
     url = (
         "https://ws.audioscrobbler.com/2.0/"
         f"?method=track.search&api_key={API_KEY}"
         f"&track={quote_plus(track)}&artist={quote_plus(artist)}&format=json"
     )
-
     r = requests.get(url, timeout=10)
     data = r.json()
 
@@ -84,18 +76,26 @@ def lastfm_search(artist, track):
     if not matches:
         return None
 
-    # Choose first result (Last.fm sorts by relevance)
     best = matches[0]
-    print(best.get("name"), best.get("artist"))
-
     return best.get("artist"), best.get("name")
 
 
-def extract_tags(track_data):
-    """Extracts Last.fm tags from track.getInfo"""
+def lastfm_artist_tags(artist):
+    url = (
+        "https://ws.audioscrobbler.com/2.0/"
+        f"?method=artist.getTopTags&api_key={API_KEY}"
+        f"&artist={quote_plus(artist)}&format=json"
+    )
+    r = requests.get(url, timeout=10)
+    data = r.json()
+
+    tags = data.get("toptags", {}).get("tag", [])
+    return [t["name"].lower() for t in tags]
+
+
+def extract_track_tags(track_data):
     if not track_data:
         return []
-
     tags = track_data.get("toptags", {}).get("tag", [])
     return [t["name"].lower() for t in tags]
 
@@ -104,41 +104,55 @@ def extract_tags(track_data):
 # Genre mapping
 # ---------------------------------------------------------
 def map_to_canonical(tags):
+    print (tags)
     for tag in tags:
         if tag in TAG_TO_CANONICAL:
             return TAG_TO_CANONICAL[tag]
-    return "unknown"
 
 
 # ---------------------------------------------------------
-# Main logic (with fallback search)
+# Main logic: track → artist → fallback search
 # ---------------------------------------------------------
 def get_genre(artist, track):
-    # Step 1: Try direct getInfo
+    # ---- 1. Track-level tags ----
     info = lastfm_get_info(artist, track)
-    tags = extract_tags(info)
-    print(tags)
+    track_tags = extract_track_tags(info)
 
-    if tags:
-        return map_to_canonical(tags)
+    genre = map_to_canonical(track_tags)
+    if genre:
+        return genre
 
-    # Step 2: Fallback search
+    # ---- 2. Artist-level tags (fallback) ----
+    artist_tags = lastfm_artist_tags(artist)
+    genre = map_to_canonical(artist_tags)
+    if genre:
+        return genre
+
+    # ---- 3. Fallback search ----
     fallback = lastfm_search(artist, track)
     if fallback:
         corrected_artist, corrected_track = fallback
-        info = lastfm_get_info(corrected_artist, corrected_track)
-        tags = extract_tags(info)
-        if tags:
-            return map_to_canonical(tags)
 
-    return "unknown"
+        info = lastfm_get_info(corrected_artist, corrected_track)
+        track_tags = extract_track_tags(info)
+
+        genre = map_to_canonical(track_tags)
+        if genre:
+            return genre
+
+        artist_tags = lastfm_artist_tags(corrected_artist)
+        genre = map_to_canonical(artist_tags)
+        if genre:
+            return genre
+
+    return "Unknown"
 
 
 # ---------------------------------------------------------
 # CLI
 # ---------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Get canonical genre for a track using Last.fm with fallback search")
+    parser = argparse.ArgumentParser(description="Get canonical genre for a track using Last.fm with fallback search & artist fallback.")
     parser.add_argument("artist")
     parser.add_argument("track")
     args = parser.parse_args()

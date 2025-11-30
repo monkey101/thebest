@@ -35,15 +35,18 @@ def connect_to_mongodb():
 
 
 def find_tracks_with_missing_genres(collection):
-    """Find all tracks with empty or null genre field."""
+    """Find all tracks with empty, null, unset, or missing genre field."""
     query = {
         "$or": [
             {"genre": {"$exists": False}},
-            {"genre": None},
+            {"genre": "Unknown"},
+            {"genre": "None"},
             {"genre": ""},
-            {"genre": " "}  # Also catch whitespace-only strings
+            {"genre": " "},  # Also catch whitespace-only strings
         ]
     }
+    #query = {"genre":"error"} # use for specific genre update
+    print(query)
 
     # Only return fields we need
     projection = {
@@ -65,7 +68,6 @@ def get_genre_for_track(artist, track):
         genre = get_genre(artist, track)
         if not genre:
             return "unknown"
-        #genre = map_tags_to_genre(tags)
         return genre
     except Exception as e:
         print(f"  ERROR fetching genre: {e}", file=sys.stderr)
@@ -87,8 +89,13 @@ def main():
         client.close()
         return
 
+    # Track statistics
+    updated_count = 0
+    skipped_count = 0
+
     # Process each track
     for idx, track_doc in enumerate(tracks, 1):
+        track_id = track_doc.get('_id')
         track_name = track_doc.get('track', 'Unknown Track')
         artist_name = track_doc.get('artist', 'Unknown Artist')
         album = track_doc.get('album', 'Unknown Album')
@@ -101,10 +108,30 @@ def main():
         genre = get_genre_for_track(artist_name, track_name)
 
         print(f"         Genre found: {genre}")
+
+        # Update database if genre is not "Unknown"
+        if genre and genre.lower() != "unknown":
+            try:
+                result = collection.update_one(
+                    {"_id": track_id},
+                    {"$set": {"genre": genre}}
+                )
+                if result.modified_count > 0:
+                    print(f"         ✓ Updated in database")
+                    updated_count += 1
+                else:
+                    print(f"         ! No changes made")
+            except Exception as e:
+                print(f"         ✗ Error updating database: {e}", file=sys.stderr)
+        else:
+            print(f"         - Skipped (genre unknown)")
+            skipped_count += 1
+
         print()
 
     client.close()
-    print("Done!")
+    print("=" * 60)
+    print(f"Done! Updated: {updated_count}, Skipped: {skipped_count}, Total: {total}")
 
 
 if __name__ == "__main__":
