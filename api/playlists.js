@@ -35,6 +35,15 @@ module.exports = async (req, res) => {
       playlistsMap[track.playlist].tracks.push(track);
     });
     const playlists = Object.values(playlistsMap);
+
+    // Sort playlists by year descending, then by playlist name
+    playlists.sort((a, b) => {
+      if (b.year !== a.year) {
+        return b.year.localeCompare(a.year);
+      }
+      return a.playlist.localeCompare(b.playlist);
+    });
+
     res.status(200).json(playlists);
   } catch (error) {
     console.error('Error fetching playlists:', error);
