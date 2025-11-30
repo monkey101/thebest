@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle chartYear and chartAuthor parameters for charts tab
     if (tab === 'charts' && (chartYear || chartAuthor)) {
-      setTimeout(() => {
+      // Wait for charts to render, then apply filters
+      setTimeout(async () => {
+        await renderCharts();
         if (chartYear) {
           const chartYearSelect = document.getElementById('chartYearSelect');
           if (chartYearSelect) {
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         applyChartFilters();
-      }, 1000); // Wait for charts to render
+      }, 100);
     }
   }
 
@@ -655,16 +657,16 @@ const chartIds = [
 window.chartInstances = [];
 
 // Render charts when Charts tab is activated
-function renderCharts() {
+async function renderCharts() {
   if (window.chartsRendered) {
-    return; // Charts already rendered
+    return Promise.resolve(); // Charts already rendered
   }
 
   const sdk = new ChartsEmbedSDK({
     baseUrl: chartsBaseUrl
   });
 
-  chartIds.forEach((chartId, index) => {
+  const renderPromises = chartIds.map((chartId, index) => {
     const chart = sdk.createChart({
       chartId: chartId,
       height: '480px',
@@ -677,7 +679,7 @@ function renderCharts() {
     // Store chart instance
     window.chartInstances[index] = chart;
 
-    chart.render(document.getElementById(`chart-${index + 1}`))
+    return chart.render(document.getElementById(`chart-${index + 1}`))
       .then(() => {
         console.log(`Chart ${index + 1} rendered successfully`);
       })
@@ -686,14 +688,20 @@ function renderCharts() {
       });
   });
 
+  // Wait for all charts to render
+  await Promise.all(renderPromises);
+
   window.chartsRendered = true;
 
   // Populate dropdowns after charts render
   // Use setTimeout to ensure data has been loaded
-  setTimeout(() => {
-    populateChartYearDropdown();
-    populateChartAuthorDropdown();
-  }, 500);
+  await new Promise(resolve => {
+    setTimeout(async () => {
+      await populateChartYearDropdown();
+      await populateChartAuthorDropdown();
+      resolve();
+    }, 500);
+  });
 }
 
 // Populate the chart year filter dropdown
@@ -818,7 +826,7 @@ const chartsTab = document.querySelector('[data-tab="charts"]');
 if (chartsTab) {
   chartsTab.addEventListener('click', () => {
     // Delay rendering slightly to ensure tab is visible
-    setTimeout(renderCharts, 100);
+    setTimeout(() => renderCharts(), 100);
   });
 }
 
