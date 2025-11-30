@@ -590,7 +590,7 @@ function createSearchResultElement(result) {
       <span><strong>Artist:</strong> <a href="#" class="artist-link" data-artist="${escapeHtml(result.artist)}">${escapeHtml(result.artist)}</a></span>
       <span><strong>Album:</strong> <a href="#" class="album-link" data-album="${escapeHtml(result.album)}">${escapeHtml(result.album)}</a></span>
       <span><strong>Playlist:</strong> ${escapeHtml(result.playlist)}</span>
-      <span><strong>Author:</strong> ${escapeHtml(result.author)}</span>
+      <span><strong>Author:</strong> <a href="#" class="author-link" data-author="${escapeHtml(result.author)}">${escapeHtml(result.author)}</a></span>
       <span><strong>Year:</strong> ${result.year}</span>
     </div>
     <p><small>Genre: ${result.genre || 'N/A'} | Duration: ${result.time || 'N/A'} | Track #${result.trackNumber || 'N/A'}</small></p>
@@ -619,6 +619,16 @@ function createSearchResultElement(result) {
       searchInput.value = albumName;
       hideAutocomplete();
       performSearch();
+    });
+  }
+
+  // Add click event listener to author link
+  const authorLink = div.querySelector('.author-link');
+  if (authorLink) {
+    authorLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const authorName = e.target.dataset.author;
+      loadPlaylistsByAuthor(authorName);
     });
   }
 
