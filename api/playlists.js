@@ -1,7 +1,11 @@
 const connectDB = require('./_db');
 
 module.exports = async (req, res) => {
-  const { year, author } = req.query;
+  let { year, author } = req.query;
+
+  // Decode URL-encoded parameters (handle + as space)
+  if (author) author = decodeURIComponent(author.replace(/\+/g, ' '));
+  if (year) year = decodeURIComponent(year.replace(/\+/g, ' '));
 
   // At least one filter is required
   if (!year && !author) {

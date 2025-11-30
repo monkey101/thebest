@@ -163,7 +163,12 @@ async function loadAuthors() {
 // Load playlists with filters (year and/or author)
 async function loadPlaylists(filters = {}) {
   try {
-    const { year, author } = filters;
+    // Filter out null/undefined values
+    const cleanFilters = {};
+    if (filters.year) cleanFilters.year = filters.year;
+    if (filters.author) cleanFilters.author = filters.author;
+
+    const { year, author } = cleanFilters;
 
     // Update dropdown values
     const yearSelect = document.getElementById('yearSelect');
@@ -185,7 +190,7 @@ async function loadPlaylists(filters = {}) {
     }
 
     // Switch to playlists tab with parameters
-    switchToTab('playlists', filters);
+    switchToTab('playlists', cleanFilters);
 
     const response = await fetch(`/api/playlists?${params.toString()}`);
     const playlists = await response.json();
@@ -577,7 +582,7 @@ function createSearchResultElement(result) {
     <div class="playlist-meta">
       <span><strong>Artist:</strong> <a href="#" class="artist-link" data-artist="${escapeHtml(result.artist)}">${escapeHtml(result.artist)}</a></span>
       <span><strong>Album:</strong> <a href="#" class="album-link" data-album="${escapeHtml(result.album)}">${escapeHtml(result.album)}</a></span>
-      <span><strong>Playlist:</strong> ${escapeHtml(result.playlist)}</span>
+      <span><strong>Playlist:</strong> <a href="#" class="playlist-link" data-year="${result.year}" data-author="${escapeHtml(result.author)}">${escapeHtml(result.playlist)}</a></span>
       <span><strong>Author:</strong> <a href="#" class="author-link" data-author="${escapeHtml(result.author)}">${escapeHtml(result.author)}</a></span>
       <span><strong>Year:</strong> ${result.year}</span>
     </div>
@@ -617,6 +622,17 @@ function createSearchResultElement(result) {
       e.preventDefault();
       const authorName = e.target.dataset.author;
       loadPlaylistsByAuthor(authorName);
+    });
+  }
+
+  // Add click event listener to playlist link
+  const playlistLink = div.querySelector('.playlist-link');
+  if (playlistLink) {
+    playlistLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const year = e.target.dataset.year;
+      const author = e.target.dataset.author;
+      loadPlaylists({ year, author });
     });
   }
 
