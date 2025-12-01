@@ -19,10 +19,9 @@ if not API_KEY:
 # Canonical genre taxonomy (~30 genres)
 # ---------------------------------------------------------
 CANONICAL_GENRES = {
-    "Rock/Pop": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock", "pop", "dance", "synthpop", "k-pop", "electropop", "j-pop"],
+    "Rock/Pop": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock", "pop", "dance", "synthpop", "k-pop", "electropop", "j-pop", "metal", "heavy metal", "death metal", "black metal", "nu metal"],
     "Hip-hop/Rap": ["hip hop", "rap", "trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
     "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass", "electro", "garage house"],
-    "Metal": ["metal", "heavy metal", "death metal", "black metal", "nu metal"],
     "R&B/Soul": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
     "Jazz": ["jazz", "swing", "bebop", "latin jazz"],
     "Country": ["country", "alt-country", "bluegrass", "country rock","alt-country"],

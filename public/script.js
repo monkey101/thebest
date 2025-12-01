@@ -36,6 +36,17 @@ function switchToTab(tabName, params = {}, clearAll = false) {
   } else {
     url.searchParams.set('tab', tabName);
 
+    // Always clear playlist-specific parameters when not on playlists tab
+    if (tabName !== 'playlists') {
+      url.searchParams.delete('year');
+      url.searchParams.delete('author');
+    }
+
+    // Always clear search parameter when not on search tab
+    if (tabName !== 'search') {
+      url.searchParams.delete('q');
+    }
+
     // Add additional params
     Object.keys(params).forEach(key => {
       if (params[key]) {
