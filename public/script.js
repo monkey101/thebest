@@ -244,8 +244,8 @@ async function loadPlaylistsByYear(year) {
 
 // Load playlists for a specific author (kept for backward compatibility)
 async function loadPlaylistsByAuthor(author) {
-  const year = document.getElementById('yearSelect')?.value;
-  await loadPlaylists({ year: year || undefined, author });
+  // Don't preserve year filter when called from external links
+  await loadPlaylists({ author });
 }
 
 // Load playlists when year is selected from dropdown
