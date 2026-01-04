@@ -3,6 +3,7 @@
 import os
 import sys
 import spotipy
+from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 from dotenv import load_dotenv
@@ -31,7 +32,7 @@ def get_spotify_client():
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
         client_id=client_id,
         client_secret=client_secret,
-        redirect_uri='http://localhost:8888/callback',
+        redirect_uri='http://127.0.0.1:888/callback',
         scope='playlist-read-private playlist-read-collaborative'
     ))
     return sp

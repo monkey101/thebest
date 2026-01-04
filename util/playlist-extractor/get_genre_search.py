@@ -19,18 +19,18 @@ if not API_KEY:
 # Canonical genre taxonomy (~30 genres)
 # ---------------------------------------------------------
 CANONICAL_GENRES = {
-    "Rock/Pop": ["rock", "alternative", "indie", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock", "pop", "dance", "synthpop", "k-pop", "electropop", "j-pop", "metal", "heavy metal", "death metal", "black metal", "nu metal"],
-    "Hip-hop/Rap": ["hip hop", "rap", "trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
+    "Rock/Pop": ["rock", "alternative", "indie", "indie rock", "hard rock", "no wave", "rockabilly", "surf rock", "punk rock", "classic rock", "punk", "grunge", "progressive rock", "noise rock", "garage rock", "psychedelic rock", "pop", "dance", "synthpop", "k-pop", "electropop", "j-pop", "metal", "heavy metal", "death metal", "black metal", "nu metal"],
+    "Hip-hop/Rap": ["hip hop", "rap", "christian rap","trap", "boom bap", "trip hop", "old school", "hip-hop", "gangsta rap"],
     "Electronic": ["electronic", "edm", "house", "techno", "trance", "drum and bass", "electro", "garage house"],
     "R&B/Soul": ["r&b", "rnb", "soul", "neo-soul", "funk", "disco", "motown","doo-wop", "doo wop", "quiet storm"],
     "Jazz": ["jazz", "swing", "bebop", "latin jazz"],
     "Country": ["country", "alt-country", "bluegrass", "country rock","alt-country"],
     "Reggae": ["reggae", "ska", "dub", "dancehall"],
-    "Blues/Folk": ["blues", "folk", "singer-songwriter", "americana"],
+    "Blues/Folk": ["blues", "folk", "singer-songwriter", "americana", "zydeco", "cajun","americana"],
     "Gospel": ["gospel", "christian", "spritiuals"],
     "Classical": ["classical", "orchestral", "baroque"],
-    "Latin": ["latin", "reggaeton", "bachata", "salsa", "cumbia", "latin soul"],
-    "World": ["world", "afrobeats", "hong kong", "celtic","ghana", "afrobeat", "afropop", "lebanon", "cabo verde", "cape verde", "arab", "nigerian", "hawaiian", "african", "balkan", "croatia", "french", "france", "congo-brazzaville", "italian", "traditional", "haiti", "spanish", "korean", "calypso","bollywood", "pakistani"],
+    "Latin": ["latin", "reggaeton", "colombia", "urbano latino", "bachata", "salsa", "cumbia", "latin soul"],
+    "World": ["world", "arabic", "afrobeats", "hong kong", "celtic","ghana", "afrobeat", "afropop", "lebanon", "cabo verde", "cape verde", "arab", "nigerian", "hawaiian", "african", "balkan", "croatia", "french", "france", "congo-brazzaville", "italian", "traditional", "haiti", "spanish", "korean", "calypso","bollywood", "pakistani"],
     "Brazilian": ["brazilian", "brazil", "bossa nova", "samba", "mpb"],
     "Soundtrack": ["soundtrack", "score"],
     "Comedy/Spoken Word": ["comedy", "spoken word", "stand-up", "stand up"],

@@ -6,7 +6,7 @@ A command-line tool to extract track metadata from Spotify playlists into CSV fo
 
 1. Install the required dependencies:
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 2. Create a Spotify Developer account and create a new application at https://developer.spotify.com/dashboard
@@ -37,8 +37,12 @@ Create a JSON file containing your playlist information in the following format:
 }
 ```
 
-Use the utility `./spotifyfolders  <folder-uri> > 2024-fireside-folders.json`
+To do this, use the utility `./spotifyfolders  <folder-uri> > 2024-playlist.json`
 This will dump all the playlist folders to a JSON file with the correct format. 
+
+To get the <folder-uri>, drag-and-drop the folder to the terminal.
+
+Reformat the json to make it readable using claude or vscode.
 
 ### Update Playlist Owners
 
@@ -51,7 +55,7 @@ Add the year at the top level of the file so it looks like:
 
 To update the playlist owners in your JSON file:
 ```bash
-python playlist_extractor.py playlists.json --update-owners
+python3 playlist_extractor.py playlists.json --update-owners
 ```
 
 This will:
@@ -68,7 +72,7 @@ This will:
 
 Run the script with your JSON file to extract playlist data:
 ```bash
-python playlist_extractor.py playlists.json
+python3 playlist_extractor.py playlists.json
 ```
 
 The script will:
@@ -93,3 +97,12 @@ The CSV file will contain the following columns:
 - author_name
 - playlist_name
 - index 
+
+## Import the file into MongoDB
+Use Compass to upload the new tracks with the "import data" function or use mongoimport with the CSV.
+
+## Update the missing genres
+Use the following script to update all the tracks with genre data from Last.fm
+```bash
+python3 update_missing_genres.py
+```
